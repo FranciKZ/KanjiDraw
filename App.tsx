@@ -72,7 +72,7 @@ const App = () => {
                     }}
                 >
                     <Section title='CHAAANce'>
-                        YOU'RE IN MY APP BRO
+                        YOU'RE IN MY APP BROoooooooo
                     </Section>
                     <Section title='Step One'>
                         Edit <Text style={styles.highlight}>App.js</Text> to
