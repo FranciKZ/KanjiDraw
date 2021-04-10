@@ -1,12 +1,10 @@
 import React from 'react'
-import { Text, View } from 'react-native';
+import { SafeAreaView, Text, View } from 'react-native';
 
-const Home: React.FC = (props) => {
+export const Home: React.FC = (props) => {
     return (
-        <View>
-            <Text>t</Text>
-        </View>
+        <SafeAreaView style={{ flex: 1 }}>
+            <Text>Home Text</Text>
+        </SafeAreaView>
     )
 }
-
-export default Home;

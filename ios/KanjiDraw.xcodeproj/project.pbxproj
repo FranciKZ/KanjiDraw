@@ -42,6 +42,22 @@
 		95314AFFE46DC5B395C9F9C5 /* Pods-KanjiDraw.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KanjiDraw.debug.xcconfig"; path = "Target Support Files/Pods-KanjiDraw/Pods-KanjiDraw.debug.xcconfig"; sourceTree = "<group>"; };
 		A125BF6C1BB42C6BB0E4E261 /* Pods-KanjiDraw.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KanjiDraw.release.xcconfig"; path = "Target Support Files/Pods-KanjiDraw/Pods-KanjiDraw.release.xcconfig"; sourceTree = "<group>"; };
 		A9B435D6462CF65D5242E6E3 /* libPods-KanjiDraw.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KanjiDraw.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BDD2524D26214B03001998FB /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
+		BDD2524E26214B03001998FB /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
+		BDD2524F26214B03001998FB /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
+		BDD2525026214B03001998FB /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
+		BDD2525126214B03001998FB /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Brands.ttf; sourceTree = "<group>"; };
+		BDD2525226214B03001998FB /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
+		BDD2525326214B03001998FB /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AntDesign.ttf; sourceTree = "<group>"; };
+		BDD2525426214B03001998FB /* Foundation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Foundation.ttf; sourceTree = "<group>"; };
+		BDD2525526214B03001998FB /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ionicons.ttf; sourceTree = "<group>"; };
+		BDD2525626214B03001998FB /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
+		BDD2525726214B03001998FB /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Regular.ttf; sourceTree = "<group>"; };
+		BDD2525826214B03001998FB /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
+		BDD2525926214B03001998FB /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
+		BDD2525A26214B03001998FB /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
+		BDD2525B26214B03001998FB /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
+		BDD2525C26214B03001998FB /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F070C316EF497D2E1152BF76 /* Pods-KanjiDraw-KanjiDrawTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KanjiDraw-KanjiDrawTests.debug.xcconfig"; path = "Target Support Files/Pods-KanjiDraw-KanjiDrawTests/Pods-KanjiDraw-KanjiDrawTests.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -116,12 +132,14 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				BDD2524C26214B03001998FB /* Fonts */,
 				13B07FAE1A68108700A75B9A /* KanjiDraw */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* KanjiDrawTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BDC330F31D8CC2E11BBFCE1D /* Pods */,
+				EC40E722E8134DDDB99C2DCA /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -146,6 +164,37 @@
 				8871BD3E03DEACA49B43FA68 /* Pods-KanjiDraw-KanjiDrawTests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		BDD2524C26214B03001998FB /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				BDD2524D26214B03001998FB /* Fontisto.ttf */,
+				BDD2524E26214B03001998FB /* Octicons.ttf */,
+				BDD2524F26214B03001998FB /* Feather.ttf */,
+				BDD2525026214B03001998FB /* Entypo.ttf */,
+				BDD2525126214B03001998FB /* FontAwesome5_Brands.ttf */,
+				BDD2525226214B03001998FB /* MaterialCommunityIcons.ttf */,
+				BDD2525326214B03001998FB /* AntDesign.ttf */,
+				BDD2525426214B03001998FB /* Foundation.ttf */,
+				BDD2525526214B03001998FB /* Ionicons.ttf */,
+				BDD2525626214B03001998FB /* FontAwesome5_Solid.ttf */,
+				BDD2525726214B03001998FB /* FontAwesome5_Regular.ttf */,
+				BDD2525826214B03001998FB /* FontAwesome.ttf */,
+				BDD2525926214B03001998FB /* Zocial.ttf */,
+				BDD2525A26214B03001998FB /* EvilIcons.ttf */,
+				BDD2525B26214B03001998FB /* SimpleLineIcons.ttf */,
+				BDD2525C26214B03001998FB /* MaterialIcons.ttf */,
+			);
+			name = Fonts;
+			path = "../node_modules/react-native-vector-icons/Fonts";
+			sourceTree = "<group>";
+		};
+		EC40E722E8134DDDB99C2DCA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -1,28 +1,28 @@
 import React from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
+import { Modal, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 interface IKeyPromptProps {
     modalVisible: boolean;
     toggleModal: () => void;
 }
 
-const KeyPrompt: React.FC<IKeyPromptProps> = ({ modalVisible }) => {
-    return (
-        <View style={styles.centeredView}>
-            <Modal
-                visible={ modalVisible }
-            >
-                <p>test modal</p>
-            </Modal>
-        </View>
+export const KeyPrompt: React.FC = (props) => {
+    return (             
+        <SafeAreaView style={styles.centeredView}>
+            <Text>test modal</Text>
+        </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
     centeredView: {
-        flex: 1,
+        flex: 4,
         justifyContent: 'center',
         alignContent: 'center',
-        marginTop: 22
+        marginTop: 22,
+        textAlign: 'center',
+    },
+    text: {
+        textAlign: 'center'
     }
 });
