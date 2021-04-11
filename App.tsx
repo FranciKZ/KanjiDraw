@@ -4,32 +4,32 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, TouchableHighlight } from 'react-native';
 import { HomeStackScreen, ProfileStackScreen, SearchStackScreen } from './src/screens';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SecureStorage } from './src/util/SecureStorage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { KeyPrompt } from './src/components';
 Icon.loadFont();
+
 const Tab = createBottomTabNavigator();
-// Create stack navigators for the 3 pages
-// Each tab will have routes associated with them (ie. the specific kanji pages and such)
 
 export default function App() {
     const [modalVisible, setModalVisible] = useState(false);
-    const [waniKey, setWaniKey] = useState('');
-    const toggleModal = () => {
-        setModalVisible(!modalVisible);
+
+    const setKey = async (key: string) => {
+        await SecureStorage.setItem('waniKey', key);
+
+        setModalVisible(false);
     }
 
     useEffect(() => {
         const getKey = async () => {
             try {
-                const key = await AsyncStorage.getItem('waniKey');
-
-                if (key === null) {
+                const key = await SecureStorage.getItem('waniKey');
+                
+                if (!key) {
                     setModalVisible(true);
-                } else {
-                    setWaniKey(key);
                 }
             } catch (e) {
-                // error
+                console.log(e);
             }
         }
 
@@ -37,6 +37,9 @@ export default function App() {
     }, [])
 
     return (
+        modalVisible 
+        ? <KeyPrompt modalVisible={modalVisible} setKey={setKey} />
+        :
         <NavigationContainer>
             <Tab.Navigator 
                 screenOptions={({ route }) => ({ 
@@ -77,8 +80,5 @@ export default function App() {
 const styles = StyleSheet.create({
     appContainer: {
         padding: 20
-    },
-    tabBarItem: {
-        
-    }
+    }   
 });
