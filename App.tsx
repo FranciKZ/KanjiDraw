@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StyleSheet, TouchableHighlight } from 'react-native';
 import { HomeStackScreen, ProfileStackScreen, SearchStackScreen } from './src/screens';
-import { SecureStorage } from './src/util/SecureStorage';
+import { AppStorage } from './src/util/AppStorage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { KeyPrompt } from './src/components';
 Icon.loadFont();
@@ -15,7 +15,7 @@ export default function App() {
     const [modalVisible, setModalVisible] = useState(false);
 
     const setKey = async (key: string) => {
-        await SecureStorage.setItem('waniKey', key);
+        await AppStorage.setItem('waniKey', key);
 
         setModalVisible(false);
     }
@@ -23,8 +23,8 @@ export default function App() {
     useEffect(() => {
         const getKey = async () => {
             try {
-                const key = await SecureStorage.getItem('waniKey');
-                
+                const key = await AppStorage.getSecureItem('waniKey');
+
                 if (!key) {
                     setModalVisible(true);
                 }

@@ -1,12 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { IBulkResponse } from '../models';
-import { SecureStorage } from './SecureStorage';
+import { AppStorage } from './AppStorage';
 class WaniWrapper {
     static baseUrl = 'https://api.wanikani.com/v2/';
 
     private static setHeaders = async () => {
         try {
-            const key = await SecureStorage.getItem('waniKey');
+            const key = await AppStorage.getSecureItem('waniKey');
             let headers = new Headers();
             headers.append('Authorization', `Bearer ${key}`);
 

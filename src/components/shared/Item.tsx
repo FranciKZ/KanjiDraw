@@ -1,8 +1,12 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
+import { IKanjiSubject, IRadicalSubject, IVocabSubject } from '../../models';
 
-function Item() {
+interface IItemProps {
+    item: IKanjiSubject | IRadicalSubject | IVocabSubject;
+}
+
+function Item({ item }: IItemProps) {
     return (
         <TouchableWithoutFeedback>
             
