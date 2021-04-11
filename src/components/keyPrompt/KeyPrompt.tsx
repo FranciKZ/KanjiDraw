@@ -8,7 +8,7 @@ interface IKeyPromptProps {
 
 export function KeyPrompt({ modalVisible, setKey }: IKeyPromptProps) {
     const [wanikey, setWanikey] = useState('');
-    // 390fcd3d-d287-44cb-89cb-efcdd4f359f9
+    
     const handleSubmit = () => {
         if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(wanikey)) {
             Alert.alert(
