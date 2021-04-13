@@ -9,3 +9,5 @@ export * from './IStudyMaterials';
 export * from './ISubjectBase';
 export * from './IUser';
 export * from './IVocabSubject';
+export * from './ISummary';
+export * from './ICachedData';

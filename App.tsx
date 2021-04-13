@@ -15,7 +15,7 @@ export default function App() {
     const [modalVisible, setModalVisible] = useState(false);
 
     const setKey = async (key: string) => {
-        await AppStorage.setItem('waniKey', key);
+        await AppStorage.setSecureItem('waniKey', key);
 
         setModalVisible(false);
     }
