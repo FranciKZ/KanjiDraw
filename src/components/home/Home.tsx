@@ -12,7 +12,6 @@ export function Home() {
         const getSummary = async () => {
             const response = await WaniWrapper.getSummary();
             if (response) {
-                debugger;
                 setSummary(response);
             }
         }

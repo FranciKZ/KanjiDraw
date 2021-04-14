@@ -1,12 +1,20 @@
 import React from 'react';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { IKanjiSubject, IRadicalSubject, IVocabSubject } from '../../models';
-
 interface IItemProps {
     item: IKanjiSubject | IRadicalSubject | IVocabSubject;
+    navigation: any;
+    route: any;
 }
 
-function Item({ item }: IItemProps) {
+function Subject({ item, navigation, route }: IItemProps) {
+    const navigate = () => {
+        // navigation.navigate('Account', {
+        //     screen: 'Settings',
+        //     params: { user: 'jane' },
+        //   });
+    }
+
     return (
         <TouchableWithoutFeedback>
             
@@ -14,4 +22,4 @@ function Item({ item }: IItemProps) {
     )
 }
 
-export default Item;
+export default Subject;
