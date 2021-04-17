@@ -3,7 +3,7 @@ import { Moment } from "moment";
 export interface IUser {
     object: string;
     url: string;
-    updatedAt: Moment;
+    updatedAt: string;
     data: IUserData;
 }
 
@@ -12,8 +12,8 @@ export interface IUserData {
     username: string;
     level: number;
     profileUrl: string;
-    startedAt: Moment;
-    currentVacationStartedAt: Moment | null;
+    startedAt: string;
+    currentVacationStartedAt: string;
     subscription: ISubscription;
     preferences: IUserPreferences;
 }
@@ -21,7 +21,7 @@ export interface IUserData {
 export interface ISubscription {
     active: boolean;
     maxLevelGranted: number;
-    periodEndsAt: Moment | null;
+    periodEndsAt: string;
     type: string;
 }
 

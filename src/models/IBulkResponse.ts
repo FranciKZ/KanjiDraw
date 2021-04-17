@@ -1,16 +1,10 @@
-import { Moment } from 'moment';
-import { IAssignment } from './IAssignment';
-import { ILevelProgression } from './ILevelProgression';
-import { IReview } from './IReview';
-import { IStudyMaterials } from './IStudyMaterials';
-
-export interface IBulkResponse {
+export interface IBulkResponse<T> {
     object: string;
     url: string;
     pages: IPages;
     totalCount: number;
-    updatedAt: Moment;
-    data: IAssignment[] | IReview[] | ILevelProgression[] | IStudyMaterials[];
+    updatedAt: string;
+    data: T[];
 }
 
 export interface IPages {

@@ -6,7 +6,7 @@ export interface IStudyMaterials extends IBase {
 }
 
 export interface IStudyMaterialsData {
-    createdAt: Moment;
+    createdAt: string;
     hidden: boolean;
     meaningNote: string | null;
     meaningSynonyms: string[];

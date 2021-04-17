@@ -1,8 +1,9 @@
 import React from 'react';
+import { Text } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { IKanjiSubject, IRadicalSubject, IVocabSubject } from '../../models';
+import { ISubject } from '../../models';
 interface IItemProps {
-    item: IKanjiSubject | IRadicalSubject | IVocabSubject;
+    item: ISubject;
     navigation: any;
     route: any;
 }
@@ -17,7 +18,7 @@ function Subject({ item, navigation, route }: IItemProps) {
 
     return (
         <TouchableWithoutFeedback>
-            
+            <Text>{ item.data.characters }</Text>
         </TouchableWithoutFeedback>
     )
 }

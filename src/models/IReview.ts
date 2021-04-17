@@ -6,7 +6,7 @@ export interface IReview extends IBase {
 }
 
 export interface IReviewData { 
-    createdAt: Moment;
+    createdAt: string;
     assignmentId: number;
     spacedRepetitionSystemId: number;
     startingSrsStage: number;

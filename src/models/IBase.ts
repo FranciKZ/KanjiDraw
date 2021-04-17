@@ -4,5 +4,5 @@ export interface IBase {
     id: number;
     object: string;
     url: string;
-    updatedAt: Moment;
+    updatedAt: string;
 }

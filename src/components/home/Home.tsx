@@ -24,8 +24,9 @@ export function Home() {
 
         if (summary) {
             summary.data.reviews.forEach((val: ISummaryData) => {
-                if (val.availableAt.isBefore(moment.now())) {
-                    total += val.subjectIds.length
+                debugger;
+                if (moment(val.available_at).isBefore(moment())) {
+                    total += val.subject_ids.length
                 }
             })
         }
@@ -43,7 +44,7 @@ export function Home() {
                     <View style={styles.itemCountView}>
                         <Text style={styles.itemCountText}>{
                             summary
-                            ? summary.data.lessons[0].subjectIds.length
+                            ? summary.data.lessons[0].subject_ids.length
                             : 0
                         }</Text>
                     </View>

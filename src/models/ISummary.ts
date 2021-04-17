@@ -3,17 +3,17 @@ import { Moment } from "moment";
 export interface ISummaryResponse {
     object: string;
     url: string;
-    updatedAt: Moment;
+    data_updated_at: string;
     data: ISummary;
 }
 
 export interface ISummary {
-    nextReviewsAt: Moment | null;
+    next_reviews_at: string;
     lessons: ISummaryData[];
     reviews: ISummaryData[];
 }
 
 export interface ISummaryData {
-    availableAt: Moment;
-    subjectIds: number[];
+    available_at: string;
+    subject_ids: number[];
 }

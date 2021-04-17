@@ -6,11 +6,11 @@ export interface ILevelProgression extends IBase {
 }
 
 export interface ILevelProgressionData { 
-    createdAt: Moment;
-    completedAt: Moment | null;
-    abandonedAt: Moment| null;
+    createdAt: string;
+    completedAt: string;
+    abandonedAt: string;
     level: number;
-    passedAt: Moment | null;
-    startedAt: Moment | null;
-    unlockedAt: Moment | null;
+    passedAt: string;
+    startedAt: string;
+    unlockedAt: string;
 }

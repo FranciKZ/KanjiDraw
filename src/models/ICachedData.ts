@@ -1,6 +1,7 @@
 import { Moment } from "moment";
+import { IBulkResponse } from ".";
 
-export interface ICachedData {
-    lastFetched: Moment;
-    data: any;
+export interface ICachedData<T> {
+    lastFetched: string;
+    data: IBulkResponse<T>;
 }
