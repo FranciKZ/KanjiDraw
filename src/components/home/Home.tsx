@@ -24,7 +24,6 @@ export function Home() {
 
         if (summary) {
             summary.data.reviews.forEach((val: ISummaryData) => {
-                debugger;
                 if (moment(val.available_at).isBefore(moment())) {
                     total += val.subject_ids.length
                 }

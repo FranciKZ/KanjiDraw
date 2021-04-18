@@ -22,6 +22,7 @@ export class WaniWrapper {
         try {
             const cachedLevelData: string | null = await AppStorage.getItem(`level-${levelNumber}`);
             let getData = !!!cachedLevelData;
+
             if (cachedLevelData) {
                 let parsed: ICachedData<ISubject> = JSON.parse(cachedLevelData)
                 result = parsed.data;
@@ -39,7 +40,32 @@ export class WaniWrapper {
                 }
             }
         } catch (e) {
-            Promise.reject('Error fetching level subjects')
+            Promise.reject('Error fetching level subjects');
+        }
+
+        return result;
+    }
+
+    static async getSubject(subjectId: number): Promise<ISubject> {
+        return await this.sendRequest<ISubject>('GET', `subjects/${subjectId}`, 'Error fetching subjects');
+    }
+
+    static async getSubjects(subjectIds: number[]): Promise<IBulkResponse<ISubject>> {
+        return await this.sendRequest<IBulkResponse<ISubject>>('GET', `subjects?ids=${subjectIds.join(',')}`, 'Error fetching subjects.');
+    }
+
+    private static async sendRequest<T>(method: string, queryString: string, error: string): Promise<T> {
+        let result: T = {} as T;
+
+        try {
+            const headers = await this.setHeaders(method);
+            const response = await fetch (`${this.baseUrl}/${queryString}`, { headers });
+
+            if (response.ok) {
+                result = await response.json();
+            }
+        } catch (e) {
+            Promise.reject(error);
         }
 
         return result;

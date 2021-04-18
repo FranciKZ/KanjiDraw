@@ -30,8 +30,10 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
     }, []);
 
     const displayRadicals = () => {
-        return levelData
-            .filter((val: ISubject) => val.object === 'radical')
+        const filtered =  levelData
+        .filter((val: ISubject) => val.object === 'radical');
+        debugger;
+        return filtered
             .map((val: ISubject, index: number) => {
                 return <Subject key={index} item={val} navigation={navigation} route={route}/>
             });
@@ -60,21 +62,27 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
                     iconSize={style.sectionHeaderText.fontSize * ICON_SCALING}
                 >
                     <Text style={style.sectionHeaderText}>Radicals</Text>
-                    {displayRadicals()}
+                    <View style={style.viewRow}>
+                        {displayRadicals()}
+                    </View>
                 </CollapsibleSection>
 
                 <CollapsibleSection
                     iconSize={style.sectionHeaderText.fontSize * ICON_SCALING}
                 >
                     <Text style={style.sectionHeaderText}>Kanji</Text>
-                    {displayKanji()}
+                    <View style={style.viewRow}>
+                        {displayKanji()}
+                    </View>
                 </CollapsibleSection>
 
                 <CollapsibleSection
                     iconSize={style.sectionHeaderText.fontSize * ICON_SCALING}
                 >
                     <Text style={style.sectionHeaderText}>Vocab</Text>
-                    {displayVocab()}
+                    <View style={style.viewRow}>
+                        {displayVocab()}
+                    </View>
                 </CollapsibleSection>
             </ScrollView>
         </SafeAreaView>
@@ -90,5 +98,11 @@ const style = StyleSheet.create({
     },
     sectionHeaderText: {
         fontSize: 25
+    },
+    viewRow: {
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'center'
     }
 });

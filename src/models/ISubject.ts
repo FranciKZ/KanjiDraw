@@ -13,7 +13,7 @@ export interface ISubjectData {
     hiddenAt: string;
     lessonPosition: number;
     level: number;
-    meaningMnemonic: string;
+    meaning_mnemonic: string;
     meanings: IMeaning[];
     slug: string;
     spaceRepetitionSystemId: number;
