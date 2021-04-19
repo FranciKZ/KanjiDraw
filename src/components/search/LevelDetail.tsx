@@ -32,7 +32,6 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
     const displayRadicals = () => {
         const filtered =  levelData
         .filter((val: ISubject) => val.object === 'radical');
-        debugger;
         return filtered
             .map((val: ISubject, index: number) => {
                 return <Subject key={index} item={val} navigation={navigation} route={route}/>

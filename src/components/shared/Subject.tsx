@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { ISubject } from '../../models';
+import { SvgCssUri, SvgUri } from 'react-native-svg';
+import { ICharacterImage, ISubject, ISvgCharacter } from '../../models';
 interface IItemProps {
     item: ISubject;
     navigation: any;
@@ -14,6 +15,19 @@ function Subject({ item, navigation, route }: IItemProps) {
             screen: 'SubjectDetails',
             params: { subjectId: item.id },
         });
+    }
+
+    const findRadicalUrl = (): string => {
+        let result = '';
+
+        if (item.data.character_images && item.data.character_images.length > 0) {
+            const image = item.data.character_images.find((val: ICharacterImage) => 'inline_styles' in val.metadata && val.metadata.inline_styles === false);
+            if (image !== undefined) {
+                result = image.url;
+            }
+        }
+
+        return result;
     }
 
     const itemTypeSpecificStyles = (): object => {
@@ -38,8 +52,13 @@ function Subject({ item, navigation, route }: IItemProps) {
 
     return (
         <TouchableWithoutFeedback onPress={navigate}>
-            <View style={{...styles.individualItem, ...itemTypeSpecificStyles()}}>
-                <Text style={styles.characters}>{ item.data.characters }</Text>
+            <View style={{ ...styles.individualItem, ...itemTypeSpecificStyles() }}>
+                {
+                    item.data.characters
+                        ? <Text style={styles.characters}>{item.data.characters}</Text>
+                        : <SvgUri stroke="white" strokeWidth="68" width="30px" height="32px" uri={ findRadicalUrl() } />
+                }
+
             </View>
         </TouchableWithoutFeedback>
     )
@@ -69,6 +88,9 @@ const styles = StyleSheet.create({
     characters: {
         fontSize: 25,
         color: 'white'
+    },
+    radicalSvg: {
+        color: '#fff'
     }
 })
 

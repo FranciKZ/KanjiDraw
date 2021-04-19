@@ -6,28 +6,28 @@ export interface ISubject extends IBase {
 }
 
 export interface ISubjectData {
-    auxiliaryMeanings: IAuxiliaryMeaning[];
+    auxiliary_meanings: IAuxiliaryMeaning[];
     characters: string | null;
-    createdAt: string;
-    documentUrl: string;
-    hiddenAt: string;
-    lessonPosition: number;
+    created_at: string;
+    document_url: string;
+    hidden_at: string;
+    lesson_position: number;
     level: number;
     meaning_mnemonic: string;
     meanings: IMeaning[];
     slug: string;
-    spaceRepetitionSystemId: number;
-    amalgamationSubjectIds?: number[];
-    characterImages?: ICharacterImage[];
-    componentSubjectIds?: number[];
-    meaningHint?: string | null;
-    readingHint?: string | null;
+    spaced_repetition_system_id: number;
+    amalgamation_subject_ids?: number[];
+    character_images?: ICharacterImage[];
+    component_subject_ids?: number[];
+    meaning_hint?: string | null;
+    reading_hint?: string | null;
     readingMnemonic?: string;
     readings?: IKanjiReading[];
-    visuallySimilarSubjectIds?: number[];
-    contextSentences?: IContextSentence[];
-    partsOfSpeech?: string[];
-    pronunciationAudios?: IPronunciation[];
+    visually_similar_subject_ids?: number[];
+    context_sentences?: IContextSentence[];
+    parts_of_speech?: string[];
+    pronunciation_audios?: IPronunciation[];
 }
 
 export interface IAuxiliaryMeaning {
@@ -44,11 +44,11 @@ export interface IMeaning {
 export interface ICharacterImage {
     url: string;
     metadata: ISvgCharacter | IPngCharacter;
-    contentType: 'image/png' | 'image/svg+xml';
+    content_type: 'image/png' | 'image/svg+xml';
 }
 
 export interface ISvgCharacter {
-    inlineStyles: boolean;
+    inline_styles: boolean;
 }
 
 export interface IPngCharacter {
