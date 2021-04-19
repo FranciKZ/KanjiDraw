@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ISubject } from '../../models';
 import { WaniWrapper } from '../../util/WaniWrapper';
 import { CollapsibleSection } from '../shared/CollapsibleSection';
-import Subject from '../shared/Subject';
+import SubjectButton from '../shared/SubjectButton';
 
 interface ILevelDetailProps {
     route: any;
@@ -16,9 +16,6 @@ const ICON_SCALING = 0.75;
 export function LevelDetail({ route, navigation }: ILevelDetailProps) {
     const { levelNumber } = route.params;
     const [levelData, setLevelData] = useState<ISubject[]>([]);
-    // Section list to display the sections and items
-    // https://reactnative.dev/docs/sectionlist
-
 
     useEffect(() => {
         const getData = async () => {
@@ -34,7 +31,7 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
         .filter((val: ISubject) => val.object === 'radical');
         return filtered
             .map((val: ISubject, index: number) => {
-                return <Subject key={index} item={val} navigation={navigation} route={route}/>
+                return <SubjectButton key={index} item={val} navigation={navigation} />
             });
     }
 
@@ -42,7 +39,7 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
         return levelData
             .filter((val: ISubject) => val.object === 'kanji')
             .map((val: ISubject, index: number) => {
-                return <Subject key={index} item={val} navigation={navigation} route={route}/>
+                return <SubjectButton key={index} item={val} navigation={navigation} />
             });
     }
 
@@ -50,7 +47,7 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
         return levelData
             .filter((val: ISubject) => val.object === 'vocabulary')
             .map((val: ISubject, index: number) => {
-                return <Subject key={index} item={val} navigation={navigation} route={route}/>
+                return <SubjectButton key={index} item={val} navigation={navigation} />
             });
     }
 

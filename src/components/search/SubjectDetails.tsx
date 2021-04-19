@@ -22,13 +22,24 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
         getSubject();
     }, [])
 
+    const getText = () => {
+        if (subject) {
+            const split = subject.data.meaning_mnemonic.split(/<\/?[\w]+>(.*?)<\/?[\w]+>/g);
+            debugger;
+
+
+            return subject.data.meaning_mnemonic
+        } 
+        return '';
+    }
+
     return (
         <SafeAreaView>
             <ScrollView>
                 <Text>
                     {
                         subject 
-                        ? <Text>{subject.data.meaning_mnemonic}</Text>
+                        ? <Text>{getText()}</Text>
                         : <></>
                     }
                 </Text>

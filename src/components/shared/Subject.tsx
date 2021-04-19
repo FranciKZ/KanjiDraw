@@ -1,21 +1,12 @@
-import React from 'react';
-import { Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { SvgCssUri, SvgUri } from 'react-native-svg';
-import { ICharacterImage, ISubject, ISvgCharacter } from '../../models';
+import React from 'react'
+import { StyleSheet, Text, View } from 'react-native';
+import { SvgUri } from 'react-native-svg';
+import { ICharacterImage, ISubject } from '../../models';
 interface IItemProps {
     item: ISubject;
-    navigation: any;
-    route: any;
 }
 
-function Subject({ item, navigation, route }: IItemProps) {
-    const navigate = () => {
-        navigation.navigate('SearchStackScreen', {
-            screen: 'SubjectDetails',
-            params: { subjectId: item.id },
-        });
-    }
+export function Subject({ item }: IItemProps) {
 
     const findRadicalUrl = (): string => {
         let result = '';
@@ -51,16 +42,13 @@ function Subject({ item, navigation, route }: IItemProps) {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={navigate}>
-            <View style={{ ...styles.individualItem, ...itemTypeSpecificStyles() }}>
-                {
-                    item.data.characters
-                        ? <Text style={styles.characters}>{item.data.characters}</Text>
-                        : <SvgUri stroke="white" strokeWidth="68" width="30px" height="32px" uri={ findRadicalUrl() } />
-                }
-
-            </View>
-        </TouchableWithoutFeedback>
+        <View style={{ ...styles.individualItem, ...itemTypeSpecificStyles() }}>
+            {
+                item.data.characters
+                    ? <Text style={styles.characters}>{item.data.characters}</Text>
+                    : <SvgUri stroke="white" strokeWidth="68" width="30px" height="32px" uri={findRadicalUrl()} />
+            }
+        </View>
     )
 }
 
@@ -93,5 +81,3 @@ const styles = StyleSheet.create({
         color: '#fff'
     }
 })
-
-export default Subject;

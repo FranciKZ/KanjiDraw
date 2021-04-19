@@ -51,7 +51,7 @@ const style = StyleSheet.create({
         borderBottomColor: 'rgba(80, 80, 80, 0.5)'
     },
     childrenView: {
-        padding: 10,
+        marginTop: 10,
         marginBottom: 10
     }
 })
