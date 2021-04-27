@@ -16,7 +16,6 @@ const ICON_SCALING = 0.75;
 export function LevelDetail({ route, navigation }: ILevelDetailProps) {
     const { levelNumber } = route.params;
     const [levelData, setLevelData] = useState<ISubject[]>([]);
-
     useEffect(() => {
         const getData = async () => {
             const response = await WaniWrapper.getLevel(levelNumber);
@@ -59,7 +58,7 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
                 >
                     <Text style={style.sectionHeaderText}>Radicals</Text>
                     <View style={style.viewRow}>
-                        {displayRadicals()}
+                        {levelData && displayRadicals()}
                     </View>
                 </CollapsibleSection>
 
@@ -68,7 +67,7 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
                 >
                     <Text style={style.sectionHeaderText}>Kanji</Text>
                     <View style={style.viewRow}>
-                        {displayKanji()}
+                        {levelData && displayKanji()}
                     </View>
                 </CollapsibleSection>
 
@@ -77,7 +76,7 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
                 >
                     <Text style={style.sectionHeaderText}>Vocab</Text>
                     <View style={style.viewRow}>
-                        {displayVocab()}
+                        {levelData && displayVocab()}
                     </View>
                 </CollapsibleSection>
             </ScrollView>
