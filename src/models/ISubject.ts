@@ -22,7 +22,7 @@ export interface ISubjectData {
     component_subject_ids?: number[];
     meaning_hint?: string | null;
     reading_hint?: string | null;
-    readingMnemonic?: string;
+    reading_mnemonic?: string;
     readings?: IKanjiReading[];
     visually_similar_subject_ids?: number[];
     context_sentences?: IContextSentence[];

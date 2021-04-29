@@ -6,14 +6,19 @@ import { Subject } from './Subject';
 interface IItemProps {
     item: ISubject;
     navigation: any;
+    push?: boolean;
 }
 
-function SubjectButton({ item, navigation }: IItemProps) {
+function SubjectButton({ item, navigation, push = false }: IItemProps) {
     const navigate = () => {
-        navigation.navigate('SearchStackScreen', {
-            screen: 'SubjectDetails',
-            params: { subjectId: item.id },
-        });
+        if (push) {
+            navigation.push('SubjectDetails', { subjectId: item.id });
+        } else {
+            navigation.navigate('SearchStackScreen', {
+                screen: 'SubjectDetails',
+                params: { subjectId: item.id },
+            });
+        }
     }
 
     return (
