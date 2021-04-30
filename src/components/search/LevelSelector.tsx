@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native';
 import { ScrollView, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { useTheme } from '../../util/Theme';
 
 interface ILevelSelector {
     route: any;
@@ -8,7 +9,7 @@ interface ILevelSelector {
 }
 
 export function LevelSelector({ route, navigation }: ILevelSelector) {
-
+    const theme = useTheme();
     const navigate = (levelNumber: number) => {
         navigation.navigate('SearchStackScreen', {
             screen: 'LevelDetail',
@@ -21,8 +22,8 @@ export function LevelSelector({ route, navigation }: ILevelSelector) {
 
         for (let i = 1; i <= 60; i++) {
             elements.push(
-                <TouchableWithoutFeedback key={i} style={styles.individualItem} onPress={() => navigate(i)}>
-                    <Text style={styles.individalItemText}>{i}</Text>
+                <TouchableWithoutFeedback key={i} style={[styles.individualItem, theme.primaryBorder, theme.primaryItemBackground]} onPress={() => navigate(i)}>
+                    <Text style={theme.primaryText}>{i}</Text>
                 </TouchableWithoutFeedback>
             );
         }
@@ -32,7 +33,7 @@ export function LevelSelector({ route, navigation }: ILevelSelector) {
 
     return (
         <ScrollView style={styles.container}>
-            <View style={styles.viewRow}>
+            <View style={theme.viewRow}>
                 {generateLevels()}
             </View>
         </ScrollView>
@@ -43,27 +44,16 @@ const styles = StyleSheet.create({
     container: {
         margin: 20
     },
-    viewRow: {
-        flex: 1,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'center'
-    },
     individualItem: {
         fontSize: 20,
-        backgroundColor: 'white',
         width: 45,
         height: 45,
         margin: 5,
         borderRadius: 10,
         borderWidth: 1,
-        borderColor: 'rgba(102, 102, 102, 0.5)',
         flex: 1,
         alignContent: 'center',
         alignItems: 'center',
         justifyContent: 'center'
-    },
-    individalItemText: {
-        color: 'rgb(70, 70, 70)'
     }
 })

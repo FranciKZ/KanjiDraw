@@ -5,10 +5,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 Icon.loadFont();
 interface ICollapsibleSectionProps {
     children: any;
-    iconSize: number;
+    iconSize?: number;
 }
 
-export function CollapsibleSection({ children, iconSize }: ICollapsibleSectionProps) {
+export function CollapsibleSection({ children, iconSize = 30 }: ICollapsibleSectionProps) {
     const [isOpen, setIsOpen] = useState(true);
 
     const onPress = () => {

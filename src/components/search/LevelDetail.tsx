@@ -26,8 +26,8 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
     }, []);
 
     const displayRadicals = () => {
-        const filtered =  levelData
-        .filter((val: ISubject) => val.object === 'radical');
+        const filtered = levelData
+            .filter((val: ISubject) => val.object === 'radical');
         return filtered
             .map((val: ISubject, index: number) => {
                 return <SubjectButton key={index} item={val} navigation={navigation} />
@@ -51,8 +51,11 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
     }
 
     return (
-        <SafeAreaView style={style.container}>
+        <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
             <ScrollView>
+                <View style={style.viewRow}> 
+                    <Text>Level: {levelNumber}</Text>
+                </View>
                 <CollapsibleSection
                     iconSize={style.sectionHeaderText.fontSize * ICON_SCALING}
                 >
@@ -75,7 +78,7 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
                     iconSize={style.sectionHeaderText.fontSize * ICON_SCALING}
                 >
                     <Text style={style.sectionHeaderText}>Vocab</Text>
-                    <View style={style.viewRow}>
+                    <View>
                         {levelData && displayVocab()}
                     </View>
                 </CollapsibleSection>

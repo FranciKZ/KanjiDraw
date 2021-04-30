@@ -7,6 +7,8 @@ import { HomeStackScreen, ProfileStackScreen, SearchStackScreen } from './src/sc
 import { AppStorage } from './src/util/AppStorage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { KeyPrompt } from './src/components';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ThemeContext, themes } from './src/util/Theme';
 Icon.loadFont();
 
 const Tab = createBottomTabNavigator();
@@ -40,40 +42,44 @@ export default function App() {
         modalVisible 
         ? <KeyPrompt modalVisible={modalVisible} setKey={setKey} />
         :
-        <NavigationContainer>
-            <Tab.Navigator 
-                screenOptions={({ route }) => ({ 
-                    headerShown: false,
-                    tabBarIcon: ({ focused, color }) => {
-                        let iconName = 'home';
-                        if (route.name === 'ProfileStackScreen') {
-                            iconName = 'person';
-                        } else if (route.name === 'SearchStackScreen') {
-                            iconName = 'search';
-                        }
+        <SafeAreaProvider>
+            <ThemeContext.Provider value={themes.light}>
+                <NavigationContainer>
+                    <Tab.Navigator 
+                        screenOptions={({ route }) => ({ 
+                            headerShown: false,
+                            tabBarIcon: ({ focused, color }) => {
+                                let iconName = 'home';
+                                if (route.name === 'ProfileStackScreen') {
+                                    iconName = 'person';
+                                } else if (route.name === 'SearchStackScreen') {
+                                    iconName = 'search';
+                                }
 
-                        return <Icon size={40} color={color} name={iconName} />
-                    },
-                    tabBarButton: (props) => <TouchableHighlight {...props} underlayColor="#DDDDDD" />
-                })}
-            >
-                <Tab.Screen
-                    name='HomeStackScreen'
-                    component={HomeStackScreen}
-                    options={{ tabBarShowLabel: false }}
-                />
-                <Tab.Screen
-                    name='ProfileStackScreen'
-                    component={ProfileStackScreen}
-                    options={{ tabBarShowLabel: false }}
-                />
-                <Tab.Screen
-                    name='SearchStackScreen'
-                    component={SearchStackScreen}
-                    options={{ tabBarShowLabel: false }}
-                />
-            </Tab.Navigator>
-        </NavigationContainer>
+                                return <Icon size={40} color={color} name={iconName} />
+                            },
+                            tabBarButton: (props) => <TouchableHighlight {...props} underlayColor="#DDDDDD" />
+                        })}
+                    >
+                        <Tab.Screen
+                            name='HomeStackScreen'
+                            component={HomeStackScreen}
+                            options={{ tabBarShowLabel: false }}
+                        />
+                        <Tab.Screen
+                            name='ProfileStackScreen'
+                            component={ProfileStackScreen}
+                            options={{ tabBarShowLabel: false }}
+                        />
+                        <Tab.Screen
+                            name='SearchStackScreen'
+                            component={SearchStackScreen}
+                            options={{ tabBarShowLabel: false }}
+                        />
+                    </Tab.Navigator>
+                </NavigationContainer>
+            </ThemeContext.Provider>
+        </SafeAreaProvider>
     );
 };
 

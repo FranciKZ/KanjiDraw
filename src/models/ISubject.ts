@@ -1,10 +1,16 @@
 import { Moment } from "moment";
 import { IBase } from "./IBase";
 
+export interface ISubjectWithRelations {
+    subject: ISubject | undefined;
+    components: ISubject[] | undefined;
+    amalgamations: ISubject[] | undefined;
+    visuallySimilar: ISubject[] | undefined;
+}
+
 export interface ISubject extends IBase {
     data: ISubjectData;
 }
-
 export interface ISubjectData {
     auxiliary_meanings: IAuxiliaryMeaning[];
     characters: string | null;
@@ -30,13 +36,13 @@ export interface ISubjectData {
     pronunciation_audios?: IPronunciation[];
 }
 
-export interface IAuxiliaryMeaning {
+export interface IMeaning {
     meaning: string;
     primary: boolean;
     acceptedAnswer: boolean;
 }
 
-export interface IMeaning {
+export interface IAuxiliaryMeaning {
     meaning: string;
     type: 'whitelist' | 'blacklist';
 }

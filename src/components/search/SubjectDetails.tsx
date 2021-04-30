@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { IKanjiReading, ISubject } from '../../models'
+import { IKanjiReading, IMeaning, ISubject } from '../../models'
+import { ThemeContext, useTheme } from '../../util/Theme';
 import { WaniWrapper } from '../../util/WaniWrapper';
 import { CollapsibleSection } from '../shared/CollapsibleSection';
 import { Markup } from '../shared/Markup';
+import { Subject } from '../shared/Subject';
 import SubjectButton from '../shared/SubjectButton';
 interface ISubjectDetailsProps {
     route: any;
@@ -19,6 +21,7 @@ interface ISubjectDetailsState {
 }
 
 export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
+    const theme = useTheme();
     const { subjectId } = route.params;
     const [subjectState, setSubjectState] = useState<ISubjectDetailsState>();
 
@@ -27,33 +30,9 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
             // once this returns, we'll have to fetch study materials, and all amalgamation/component/visual similar subjects
             // Almagamation = this subject is a part of said subject
             // Components = subjects that make up this subject
-            const subject = await WaniWrapper.getSubject(subjectId);
-            let amalgamations = undefined;
-            let components = undefined;
-            let visuallySimilar = undefined;
+            const subjectData = await WaniWrapper.getAllSubjectData(subjectId);
 
-            if (subject.object !== 'vocabulary') {
-                const amalgamationsResponse = await WaniWrapper.getSubjects(subject.data.amalgamation_subject_ids!);
-
-                if (subject.object === 'kanji') {
-                    const componentResponse = await WaniWrapper.getSubjects(subject.data.component_subject_ids!);
-                    const visuallySimilarResponse = await WaniWrapper.getSubjects(subject.data.visually_similar_subject_ids!);
-                    components = componentResponse.data;
-                    visuallySimilar = visuallySimilarResponse.data;
-                }
-
-                amalgamations = amalgamationsResponse.data;
-            } else {
-                const componentSubjectsResponse = await WaniWrapper.getSubjects(subject.data.component_subject_ids!);
-                components = componentSubjectsResponse.data;
-            }
-
-            setSubjectState({
-                subject,
-                components,
-                amalgamations,
-                visuallySimilar
-            });
+            setSubjectState(subjectData);
         };
 
         getSubject();
@@ -62,14 +41,12 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
     const renderSections = (): JSX.Element => {
         let result: JSX.Element = <></>;
 
-        if (subjectState) {
-            if (subjectState.subject!.object === 'radical') {
-                result = renderRadical();
-            } else if (subjectState.subject!.object === 'kanji') {
-                result = renderKanji();
-            } else {
-                result = renderVocab();
-            }
+        if (subjectState!.subject!.object === 'radical') {
+            result = renderRadical();
+        } else if (subjectState!.subject!.object === 'kanji') {
+            result = renderKanji();
+        } else {
+            result = renderVocab();
         }
 
         return result;
@@ -78,19 +55,19 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
     const renderRadical = () => {
         return (
             <>
-                <CollapsibleSection iconSize={30}>
+                <CollapsibleSection>
                     <Text>Name</Text>
                     <View>
                         <Text>Primary: {subjectState!.subject!.data.meanings[0].meaning}</Text>
                         <Text>Meaning: </Text><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
                     </View>
                 </CollapsibleSection>
-                <CollapsibleSection iconSize={30}>
+                <CollapsibleSection>
                     <Text>Found in Kanji</Text>
-                    <View style={styles.viewRow}>
+                    <View style={theme.viewRow}>
                         {
                             subjectState!.amalgamations!.map((val: ISubject, index: number) => {
-                                return <SubjectButton key={index} item={val} navigation={navigation} push={true}  />
+                                return <SubjectButton key={index} item={val} navigation={navigation} push={true} />
                             })
                         }
                     </View>
@@ -99,61 +76,64 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
         );
     }
 
+    const readingConjoiner = (type: string) => {
+        return subjectState!.subject!.data.readings!
+            .filter((val: IKanjiReading) => val.type === type)
+            .reduce((prevValue: string, currVal: IKanjiReading, idx: number) => {
+                return idx === 0 ? currVal.reading : prevValue + ', ' + currVal.reading;
+            }, '')
+    }
+
     const renderKanji = () => {
+        const radicalComponents = subjectState!.components!.map((val: ISubject, index: number) => {
+            return <SubjectButton key={index} item={val} navigation={navigation} push={true} />
+        });
+
+        const visuallySimilar = subjectState!.visuallySimilar!.map((val: ISubject, index: number) => {
+            return <SubjectButton key={index} item={val} navigation={navigation} push={true} />
+        });
+
+        const foundInVocab = subjectState!.amalgamations!.map((val: ISubject, index: number) => {
+            return <SubjectButton key={index} item={val} navigation={navigation} push={true} />
+        });
+
+        const primaryMeaning = subjectState!.subject!.data.meanings.filter((val: IMeaning) => val.primary === true)[0].meaning;
+
         return (
             <>
-                <CollapsibleSection iconSize={30}>
-                    <Text>Radical Composition</Text>
-                    <View>
-                        {
-                            subjectState!.components!.map((val: ISubject, index: number) => {
-                                return <SubjectButton key={index} item={val} navigation={navigation} push={true} />
-                            })
-                        }
+                <CollapsibleSection>
+                    <Text style={styles.headingText}>Radical Composition</Text>
+                    <View style={theme.viewRow}>
+                        {radicalComponents}
                     </View>
                 </CollapsibleSection>
-                <CollapsibleSection iconSize={30}>
-                    <Text>Meaning</Text>
+                <CollapsibleSection>
+                    <Text style={styles.headingText}>Meaning</Text>
                     <View>
-                        <Text>Primary: {subjectState!.subject!.data.meanings[0].meaning}</Text>
+                        <Text>Primary: {primaryMeaning}</Text>
                         <Text>Meaning: </Text><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
                     </View>
                 </CollapsibleSection>
-                <CollapsibleSection iconSize={30}>
-                    <Text>Readings</Text>
+                <CollapsibleSection>
+                    <Text style={styles.headingText}>Readings</Text>
                     <View>
                         <View style={styles.readingViewRow}>
                             <View>
                                 <Text>On'yomi</Text>
                                 <Text>
-                                    {
-                                        subjectState!.subject!.data.readings?.filter((val: IKanjiReading) => val.type === 'onyomi')
-                                            .reduce((prevValue: string, currVal: IKanjiReading, idx: number) => {
-                                                return idx === 0 ? currVal.reading : prevValue + ', ' + currVal.reading;
-                                            }, '')
-                                    }
+                                    {readingConjoiner('onyomi')}
                                 </Text>
                             </View>
                             <View>
                                 <Text>Kun'yomi</Text>
                                 <Text>
-                                    {
-                                        subjectState!.subject!.data.readings?.filter((val: IKanjiReading) => val.type === 'kunyomi')
-                                            .reduce((prevValue: string, currVal: IKanjiReading, idx: number) => {
-                                                return idx === 0 ? currVal.reading : prevValue + ', ' + currVal.reading;
-                                            }, '')
-                                    }
+                                    {readingConjoiner('kunyomi')}
                                 </Text>
                             </View>
                             <View>
                                 <Text>Nanori</Text>
                                 <Text>
-                                    {
-                                        subjectState!.subject!.data.readings?.filter((val: IKanjiReading) => val.type === 'nanori')
-                                            .reduce((prevValue: string, currVal: IKanjiReading, idx: number) => {
-                                                return idx === 0 ? currVal.reading : prevValue + ', ' + currVal.reading;
-                                            }, '')
-                                    }
+                                    {readingConjoiner('nanori')}
                                 </Text>
                             </View>
                         </View>
@@ -163,33 +143,28 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
                         </View>
                     </View>
                 </CollapsibleSection>
-                <CollapsibleSection iconSize={30}>
-                    <Text>Visual Similar Kanji</Text>
+                {
+                    subjectState!.visuallySimilar!.length > 0 &&
+                    <CollapsibleSection>
+                        <Text style={styles.headingText}>Visual Similar Kanji</Text>
+                        <View style={theme.viewRow}>
+                            {visuallySimilar}
+                        </View>
+                    </CollapsibleSection>
+                }
+                <CollapsibleSection>
+                    <Text style={styles.headingText}>Found in Vocab</Text>
                     <View>
-                        {
-                            subjectState!.visuallySimilar!.map((val: ISubject, index: number) => {
-                                return <SubjectButton key={index} item={val} navigation={navigation} push={true} />
-                            })
-                        }
+                        {foundInVocab}
                     </View>
-                </CollapsibleSection> 
-                <CollapsibleSection iconSize={30}>
-                    <Text>Visual Similar Kanji</Text>
-                    <View>
-                        {
-                            subjectState!.amalgamations!.map((val: ISubject, index: number) => {
-                                return <SubjectButton key={index} item={val} navigation={navigation} push={true} />
-                            })
-                        }
-                    </View>
-                </CollapsibleSection> 
+                </CollapsibleSection>
             </>
         );
     }
 
     const renderVocab = () => {
         return (
-            <CollapsibleSection iconSize={30}>
+            <CollapsibleSection>
                 <Text>Meaning</Text>
                 <View>
                     <Text>Primary: {subjectState!.subject!.data.meanings[0].meaning}</Text>
@@ -200,20 +175,25 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
     }
 
     return (
-        <SafeAreaView>
+        <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
             <ScrollView>
-                {renderSections()}
+                {
+                    subjectState &&
+                    <>
+                        <View style={theme.viewRow}>
+                            <Subject item={subjectState.subject!} />
+                        </View>
+                        {renderSections()}
+                    </>
+                }
             </ScrollView>
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
-    viewRow: {
-        flex: 1,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'center'
+    headingText: {
+        fontSize: 25
     },
     readingViewRow: {
         flexDirection: 'row',

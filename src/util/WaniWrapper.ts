@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { IBulkResponse, ICachedData, ISubject, ISummaryResponse } from '../models';
+import { IBulkResponse, ICachedData, ISubject, ISubjectWithRelations, ISummaryResponse } from '../models';
 import { AppStorage } from './AppStorage';
 export class WaniWrapper {
     static baseUrl = 'https://api.wanikani.com/v2';
@@ -52,6 +52,31 @@ export class WaniWrapper {
 
     static async getSubjects(subjectIds: number[]): Promise<IBulkResponse<ISubject>> {
         return await this.sendRequest<IBulkResponse<ISubject>>('GET', `subjects?ids=${subjectIds.join(',')}`, 'Error fetching subjects.');
+    }
+
+    static async getAllSubjectData(subjectId: number): Promise<ISubjectWithRelations> {
+        const subject = await this.getSubject(subjectId);
+        let amalgamations = undefined;
+        let components = undefined;
+        let visuallySimilar = undefined;
+
+        if (subject.object !== 'vocabulary') {
+            const amalgamationsResponse = await this.getSubjects(subject.data.amalgamation_subject_ids!);
+
+            if (subject.object === 'kanji') {
+                const componentResponse = await this.getSubjects(subject.data.component_subject_ids!);
+                const visuallySimilarResponse = await this.getSubjects(subject.data.visually_similar_subject_ids!);
+                components = componentResponse.data;
+                visuallySimilar = visuallySimilarResponse.data;
+            }
+
+            amalgamations = amalgamationsResponse.data;
+        } else {
+            const componentSubjectsResponse = await this.getSubjects(subject.data.component_subject_ids!);
+            components = componentSubjectsResponse.data;
+        }
+
+        return { subject, amalgamations, components, visuallySimilar };
     }
 
     private static async sendRequest<T>(method: string, queryString: string, error: string): Promise<T> {
