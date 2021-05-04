@@ -27,7 +27,7 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
 
     const displayRadicals = () => {
         const filtered = levelData
-            .filter((val: ISubject) => val.object === 'radical');
+            .filter((val: ISubject) => val.object === 'radical' && !val.data.hidden_at);
         return filtered
             .map((val: ISubject, index: number) => {
                 return <SubjectButton key={index} item={val} navigation={navigation} />
@@ -36,7 +36,7 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
 
     const displayKanji = () => {
         return levelData
-            .filter((val: ISubject) => val.object === 'kanji')
+            .filter((val: ISubject) => val.object === 'kanji' && !val.data.hidden_at)
             .map((val: ISubject, index: number) => {
                 return <SubjectButton key={index} item={val} navigation={navigation} />
             });
@@ -44,7 +44,7 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
 
     const displayVocab = () => {
         return levelData
-            .filter((val: ISubject) => val.object === 'vocabulary')
+            .filter((val: ISubject) => val.object === 'vocabulary' && !val.data.hidden_at)
             .map((val: ISubject, index: number) => {
                 return <SubjectButton key={index} item={val} navigation={navigation} />
             });

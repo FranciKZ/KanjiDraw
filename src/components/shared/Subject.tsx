@@ -5,9 +5,10 @@ import { ICharacterImage, IKanjiReading, IMeaning, ISubject } from '../../models
 import { useTheme } from '../../util/Theme';
 interface IItemProps {
     item: ISubject;
+    displayExtraData?: boolean;
 }
 
-export function Subject({ item }: IItemProps) {
+export function Subject({ item, displayExtraData = true }: IItemProps) {
     const theme = useTheme();
 
     const findRadicalUrl = (): string => {
@@ -25,22 +26,24 @@ export function Subject({ item }: IItemProps) {
 
     const itemTypeSpecificStyles = (): object => {
         let resultingStyles;
-        const baseStyles = {...styles.individualItem, ...theme.primaryBorder};
+        const baseStyles = { ...styles.individualItem, ...theme.primaryBorder };
         switch (item.object) {
             case 'kanji':
-                resultingStyles = {backgroundColor: theme.primaryKanji.color, ...baseStyles};
+                resultingStyles = { backgroundColor: theme.primaryKanji.color, ...baseStyles };
                 break;
             case 'vocabulary':
-                resultingStyles = {backgroundColor: theme.primaryVocab.color, ...styles.column, ...baseStyles};
+                resultingStyles = displayExtraData
+                    ? { backgroundColor: theme.primaryVocab.color, ...styles.column, ...baseStyles }
+                    : { backgroundColor: theme.primaryVocab.color, ...baseStyles };
                 break;
             case 'radical':
-                resultingStyles = {backgroundColor: theme.primaryRadical.color, ...baseStyles};
+                resultingStyles = { backgroundColor: theme.primaryRadical.color, ...baseStyles };
                 break;
             default:
                 resultingStyles = {};
                 break;
         }
-        debugger;
+
         return resultingStyles;
     }
 
@@ -68,9 +71,11 @@ export function Subject({ item }: IItemProps) {
                     : <SvgUri stroke={theme.secondaryText.color} strokeWidth="68" width="24px" height="24px" uri={findRadicalUrl()} />
             }
             {
-                item.object === 'radical'
-                    ? renderRadicalName()
-                    : renderOtherData()
+                displayExtraData
+                    ? item.object === 'radical'
+                        ? renderRadicalName()
+                        : renderOtherData()
+                    : <></>
             }
         </View>
     )

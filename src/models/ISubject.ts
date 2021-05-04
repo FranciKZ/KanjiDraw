@@ -39,7 +39,7 @@ export interface ISubjectData {
 export interface IMeaning {
     meaning: string;
     primary: boolean;
-    acceptedAnswer: boolean;
+    accepted_answer: boolean;
 }
 
 export interface IAuxiliaryMeaning {
@@ -60,13 +60,13 @@ export interface ISvgCharacter {
 export interface IPngCharacter {
     color: string;
     dimensions: string;
-    styleName: string;
+    style_name: string;
 }
 
 export interface IKanjiReading {
     reading: string;
     primary: boolean;
-    acceptedAnswer: boolean;
+    accepted_answer: boolean;
     type: 'kunyomi' | 'nanori' | 'onyomi';
 }
 
@@ -83,15 +83,15 @@ export interface IVocabReading {
 
 export interface IPronunciation {
     url: string;
-    contentType: 'audio/mpeg' | 'audio/ogg';
+    content_type: 'audio/mpeg' | 'audio/ogg';
     metadata: IPronunciationMetadata;
 }
 
 export interface IPronunciationMetadata {
     gender: string;
-    sourceId: number;
+    source_id: number;
     pronunciation: string;
-    voiceActorId: number;
-    voiceActorName: string;
-    voiceDescription: string;
+    voice_actor_id: number;
+    voice_actor_name: string;
+    voice_description: string;
 }
