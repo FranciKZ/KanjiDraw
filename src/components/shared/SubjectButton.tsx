@@ -6,10 +6,11 @@ import { Subject } from './Subject';
 interface IItemProps {
     item: ISubject;
     navigation: any;
+    displayExtraData?: boolean;
     push?: boolean;
 }
 
-function SubjectButton({ item, navigation, push = false }: IItemProps) {
+function SubjectButton({ item, navigation, push = false, displayExtraData = true }: IItemProps) {
     const navigate = () => {
         if (push) {
             navigation.push('SubjectDetails', { subjectId: item.id });
@@ -23,7 +24,7 @@ function SubjectButton({ item, navigation, push = false }: IItemProps) {
 
     return (
         <TouchableWithoutFeedback onPress={navigate}>
-            <Subject item={item} />
+            <Subject item={item} displayExtraData={displayExtraData} />
         </TouchableWithoutFeedback>
     )
 }

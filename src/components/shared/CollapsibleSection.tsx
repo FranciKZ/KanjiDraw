@@ -12,8 +12,8 @@ export function CollapsibleSection({ children, iconSize = 30 }: ICollapsibleSect
     const [isOpen, setIsOpen] = useState(true);
 
     const onPress = () => {
-        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setIsOpen(!isOpen);
+        LayoutAnimation.configureNext(LayoutAnimation.create(300, 'easeInEaseOut', 'opacity'));
     };
 
     useEffect(() => {
