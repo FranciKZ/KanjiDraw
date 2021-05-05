@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ISubject } from '../../models';
 import { WaniWrapper } from '../../util/WaniWrapper';
+import Card from '../shared/Card';
 import { CollapsibleSection } from '../shared/CollapsibleSection';
 import SubjectButton from '../shared/SubjectButton';
 
@@ -53,9 +54,9 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
     return (
         <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
             <ScrollView>
-                <View style={style.viewRow}> 
-                    <Text>Level: {levelNumber}</Text>
-                </View>
+                <Card style={style.viewRow}> 
+                    <Text style={{ fontSize: 30 }}>Level: {levelNumber}</Text>
+                </Card>
                 <CollapsibleSection
                     iconSize={style.sectionHeaderText.fontSize * ICON_SCALING}
                 >
@@ -88,9 +89,6 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
 }
 
 const style = StyleSheet.create({
-    container: {
-        margin: 20
-    },
     sectionHeader: {
         flex: 1
     },

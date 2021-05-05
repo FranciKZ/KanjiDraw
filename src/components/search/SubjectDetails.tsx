@@ -11,13 +11,16 @@ import SubjectButton from '../shared/SubjectButton';
 import Icon from 'react-native-vector-icons/Fontisto';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import SoundPlayer from 'react-native-sound-player'
+import { isKatakana, toHiragana } from 'wanakana';
 Icon.loadFont();
 interface ISubjectDetailsProps {
     route: any;
     navigation: any;
 }
 
-const ICON_SCALING = 0.75;
+type AudioMap = Record<string, IPronunciation[]>;
+
+const ICON_SCALING = 0.9;
 interface ISubjectDetailsState {
     subject: ISubject | undefined;
     components: ISubject[] | undefined;
@@ -60,7 +63,6 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
     const playAudio = (url: string) => {
         try {
             SoundPlayer.playUrl(url);
-            debugger;
         } catch (e) {
             console.log(e);
         }
@@ -69,14 +71,14 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
     const renderRadical = () => {
         return (
             <>
-                <CollapsibleSection>
+                <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     <Text>Name</Text>
                     <View>
                         <Text>Primary: {subjectState!.subject!.data.meanings[0].meaning}</Text>
                         <Text>Meaning: </Text><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
                     </View>
                 </CollapsibleSection>
-                <CollapsibleSection>
+                <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     <Text>Found in Kanji</Text>
                     <View style={theme.viewRow}>
                         {
@@ -123,20 +125,20 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
 
         return (
             <>
-                <CollapsibleSection>
+                <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Radical Composition')}
                     <View style={theme.viewRow}>
                         {radicalComponents}
                     </View>
                 </CollapsibleSection>
-                <CollapsibleSection>
+                <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Meaning')}
                     <View>
                         <Text>Primary: {primaryMeaning}</Text>
-                        <Text>Meaning: </Text><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
+                        <Text>Meaning: <Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup></Text>
                     </View>
                 </CollapsibleSection>
-                <CollapsibleSection>
+                <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Readings')}
                     <View>
                         <View style={styles.readingViewRow}>
@@ -167,14 +169,14 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
                 </CollapsibleSection>
                 {
                     subjectState!.visuallySimilar!.length > 0 &&
-                    <CollapsibleSection>
+                    <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                         {renderHeaderText('Visual Similar Kanji')}
                         <View style={theme.viewRow}>
                             {visuallySimilar}
                         </View>
                     </CollapsibleSection>
                 }
-                <CollapsibleSection>
+                <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Found in Vocab')}
                     <View>
                         {foundInVocab}
@@ -186,25 +188,23 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
 
     const renderVocab = () => {
         const alternativeMeanings = meaningConjoiner();
+        const audioObjectsMap: AudioMap = subjectState!.subject!.data.pronunciation_audios!
+            .filter((val: IPronunciation) => val.content_type === 'audio/mpeg')
+            .reduce((prev: AudioMap, curVal: IPronunciation, index: number) => (
+                {
+                    ...prev,
+                    [curVal.metadata.pronunciation]: prev[curVal.metadata.pronunciation] ? [...prev[curVal.metadata.pronunciation], curVal] : [curVal]
+                }
+            ), {});
 
         const readingViews = subjectState!.subject!.data.readings!.map((val: IKanjiReading, idx: number) => {
-            // TODO: Move this to a dictionary probably maybe perhaps
-            // Audio filtering isn't working exactly because wanikani has the pronunciatiosn entirely in hiragana
-            // and some readings are in katakana
-            // Audio playback not exactly working at all
-            const audioObjects = subjectState!.subject!.data.pronunciation_audios!
-                .filter((pronunciation: IPronunciation) => {
-                    const contentType = pronunciation.content_type === 'audio/mpeg';
-                    const pronuncatiat = pronunciation.metadata.pronunciation === val.reading;
-                    return contentType && pronuncatiat;
-                });
-
+            const audioObjects = audioObjectsMap[toHiragana(val.reading)];
             return (
                 <View key={idx} style={styles.readingViewRow}>
                     <Text>{val.reading}</Text>
                     {
-                        audioObjects.map((val: IPronunciation, idx: number) => (
-                            <TouchableWithoutFeedback onPress={() => playAudio(val.url)}>
+                        audioObjects.map((pronunciation: IPronunciation, idx: number) => (
+                            <TouchableWithoutFeedback key={`${val.reading}-${idx}`} touchSoundDisabled={true} onPress={() => playAudio(pronunciation.url)}>
                                 <Icon size={15} name='playstation' />
                             </TouchableWithoutFeedback>
                         ))
@@ -226,7 +226,7 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
 
         return (
             <>
-                <CollapsibleSection>
+                <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Meaning')}
                     <View>
                         <Text>Primary: {subjectState!.subject!.data.meanings[0].meaning}</Text>
@@ -236,20 +236,20 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
                         <Text>Explanation: </Text><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
                     </View>
                 </CollapsibleSection>
-                <CollapsibleSection>
+                <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Readings')}
                     <View>
                         {readingViews}
                         <Markup>{subjectState!.subject!.data.reading_mnemonic!}</Markup>
                     </View>
                 </CollapsibleSection>
-                <CollapsibleSection>
+                <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Context Sentences')}
                     <View>
                         {contextSentences}
                     </View>
                 </CollapsibleSection>
-                <CollapsibleSection>
+                <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Kanji Composition')}
                     <View style={theme.viewRow}>
                         {kanjiComposition}
@@ -267,11 +267,11 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
         <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
             <ScrollView>
                 {
-                    subjectState &&
+                    (subjectState && subjectState.subject) &&
                     <>
                         <View style={[theme.viewRow, styles.subjectHeader]}>
                             <View>
-                                <Subject item={subjectState.subject!} displayExtraData={false} />
+                                <Subject item={subjectState.subject} displayExtraData={false} />
                             </View>
                         </View>
                         {renderSections()}

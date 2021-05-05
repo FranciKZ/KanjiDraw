@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { LayoutAnimation, Platform, StyleSheet, Text, UIManager, View } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Card from './Card';
 Icon.loadFont();
 interface ICollapsibleSectionProps {
     children: any;
@@ -25,8 +26,8 @@ export function CollapsibleSection({ children, iconSize = 30 }: ICollapsibleSect
     }, [])
 
     return (
-        <View style={style.container}>
-            <TouchableWithoutFeedback style={style.touchable} onPress={onPress}>
+        <Card>
+            <TouchableWithoutFeedback style={isOpen ? style.touchableBorder : style.touchableNoBorder} onPress={onPress}>
                 <Icon size={iconSize} name={isOpen ? 'expand-less' : 'expand-more'} /> 
                 { children.slice(0, 1) }
             </TouchableWithoutFeedback>
@@ -35,15 +36,17 @@ export function CollapsibleSection({ children, iconSize = 30 }: ICollapsibleSect
                     { children.slice(1) }
                 </View>
             )}
-        </View>
+        </Card>
     )
 }
 
 const style = StyleSheet.create({
-    container: {
-        marginBottom: 20
+    touchableNoBorder: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
     },
-    touchable: {
+    touchableBorder: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
@@ -52,6 +55,8 @@ const style = StyleSheet.create({
     },
     childrenView: {
         marginTop: 10,
-        marginBottom: 10
+        marginBottom: 10,
+        paddingLeft: 5,
+        paddingRight: 5
     }
 })
