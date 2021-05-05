@@ -16,6 +16,7 @@
     "@react-navigation/native": "^6.0.0-next.1",
     "@react-navigation/stack": "^6.0.0-next.8",
     "@types/react-native-vector-icons": "^6.4.6",
+    "@types/wanakana": "^4.0.2",
     "expo-secure-store": "^10.0.0",
     "moment": "^2.29.1",
     "prop-types": "^15.7.2",

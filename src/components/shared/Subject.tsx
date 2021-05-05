@@ -29,7 +29,7 @@ export function Subject({ item, displayExtraData = true }: IItemProps) {
         const baseStyles = { ...styles.individualItem, ...theme.primaryBorder };
         switch (item.object) {
             case 'kanji':
-                resultingStyles = { backgroundColor: theme.primaryKanji.color, ...baseStyles };
+                resultingStyles = { backgroundColor: theme.primaryKanji.color, ...baseStyles, ...styles.notVocab };
                 break;
             case 'vocabulary':
                 resultingStyles = displayExtraData
@@ -37,7 +37,7 @@ export function Subject({ item, displayExtraData = true }: IItemProps) {
                     : { backgroundColor: theme.primaryVocab.color, ...baseStyles };
                 break;
             case 'radical':
-                resultingStyles = { backgroundColor: theme.primaryRadical.color, ...baseStyles };
+                resultingStyles = { backgroundColor: theme.primaryRadical.color, ...baseStyles, ...styles.notVocab };
                 break;
             default:
                 resultingStyles = {};
@@ -67,8 +67,11 @@ export function Subject({ item, displayExtraData = true }: IItemProps) {
         <View style={itemTypeSpecificStyles()}>
             {
                 item.data.characters
-                    ? <Text style={[styles.characters, theme.secondaryText]}>{item.data.characters}</Text>
-                    : <SvgUri stroke={theme.secondaryText.color} strokeWidth="68" width="24px" height="24px" uri={findRadicalUrl()} />
+                    ? <Text
+                        style={displayExtraData ? [styles.charactersWithExtraContent, theme.secondaryText] : [styles.charactersWithoutExtraContent, theme.secondaryText]}>
+                        {item.data.characters}
+                    </Text>
+                    : <SvgUri stroke={theme.secondaryText.color} strokeWidth="68" width={ displayExtraData ? "45px" : "55px"} height={ displayExtraData ? "45px" : "55px"} uri={findRadicalUrl()} />
             }
             {
                 displayExtraData
@@ -83,9 +86,9 @@ export function Subject({ item, displayExtraData = true }: IItemProps) {
 
 const styles = StyleSheet.create({
     individualItem: {
-        minWidth: 90,
-        padding: 5,
+        minWidth: 80,
         margin: 1,
+        padding: 3,
         borderRadius: 10,
         borderWidth: 1,
         flex: 1,
@@ -94,14 +97,22 @@ const styles = StyleSheet.create({
     },
     alignTextElements: {
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        alignContent: 'center'
+    },
+    notVocab: {
+        minHeight: 80,
+        justifyContent: 'center'
     },
     column: {
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-    characters: {
-        fontSize: 25,
+    charactersWithExtraContent: {
+        fontSize: 35,
+    },
+    charactersWithoutExtraContent: {
+        fontSize: 50
     },
     readingAndMeaningText: {
         fontSize: 15,

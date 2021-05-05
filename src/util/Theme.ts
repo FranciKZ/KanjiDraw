@@ -35,6 +35,9 @@ export const themes = {
             flexDirection: 'row',
             flexWrap: 'wrap',
             justifyContent: 'center'
+        },
+        primaryBackground: {
+            backgroundColor: '#fff'
         }
     }),
     dark: StyleSheet.create({
@@ -64,6 +67,9 @@ export const themes = {
         },
         secondaryText: {
             color: '#fff'
+        },
+        primaryBackground: {
+            backgroundColor: '#fff'
         },
         viewRow: {
             flex: 1,
