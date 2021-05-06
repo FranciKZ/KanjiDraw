@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { IBulkResponse, ICachedData, ISubject, ISubjectWithRelations, ISummaryResponse } from '../models';
+import { IAssignment, IBulkResponse, ICachedData, ISubject, ISubjectWithRelations, ISummaryResponse } from '../models';
 import { AppStorage } from './AppStorage';
 export class WaniWrapper {
     static baseUrl = 'https://api.wanikani.com/v2';
@@ -50,12 +50,19 @@ export class WaniWrapper {
         return await this.sendRequest<ISubject>('GET', `subjects/${subjectId}`, 'Error fetching subjects');
     }
 
+    static async getAssignmentData(subjectId: number): Promise<IAssignment[]> {
+        const data = await this.sendRequest<IBulkResponse<IAssignment>>('GET', `assignments?subject_ids=${subjectId}`, `Error fetching assignment data`);
+        return data.data;
+    }
+
     static async getSubjects(subjectIds: number[]): Promise<IBulkResponse<ISubject>> {
         return await this.sendRequest<IBulkResponse<ISubject>>('GET', `subjects?ids=${subjectIds.join(',')}`, 'Error fetching subjects.');
     }
 
     static async getAllSubjectData(subjectId: number): Promise<ISubjectWithRelations> {
         const subject = await this.getSubject(subjectId);
+        let assignments = await this.getAssignmentData(subject.id);
+        let reviewStatistics = undefined;
         let amalgamations = undefined;
         let components = undefined;
         let visuallySimilar = undefined;

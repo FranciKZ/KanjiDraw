@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 import { ICharacterImage, IKanjiReading, IMeaning, ISubject } from '../../models';
+import { SrsStages } from '../../util/SrsStageEnum';
 import { useTheme } from '../../util/Theme';
 interface IItemProps {
     item: ISubject;
@@ -63,6 +64,21 @@ export function Subject({ item, displayExtraData = true }: IItemProps) {
         )
     }
 
+    const dotStyles = () => {
+        const result = { backgroundColor: theme.primaryProgress.color };
+
+        switch (item.data.level) {
+            case SrsStages.BURNED:
+                result.backgroundColor = theme.primaryBurned.color;
+                break;
+            case SrsStages.LOCKED:
+                result.backgroundColor = theme.primaryLocked.color;
+                break;
+        }
+
+        return result;
+    }
+
     return (
         <View style={itemTypeSpecificStyles()}>
             {
@@ -71,7 +87,7 @@ export function Subject({ item, displayExtraData = true }: IItemProps) {
                         style={displayExtraData ? [styles.charactersWithExtraContent, theme.secondaryText] : [styles.charactersWithoutExtraContent, theme.secondaryText]}>
                         {item.data.characters}
                     </Text>
-                    : <SvgUri stroke={theme.secondaryText.color} strokeWidth="68" width={ displayExtraData ? "45px" : "55px"} height={ displayExtraData ? "45px" : "55px"} uri={findRadicalUrl()} />
+                    : <SvgUri stroke={theme.secondaryText.color} strokeWidth="68" width={displayExtraData ? "45px" : "55px"} height={displayExtraData ? "45px" : "55px"} uri={findRadicalUrl()} />
             }
             {
                 displayExtraData
@@ -88,7 +104,7 @@ const styles = StyleSheet.create({
     individualItem: {
         minWidth: 80,
         margin: 1,
-        padding: 3,
+        padding: 5,
         borderRadius: 10,
         borderWidth: 1,
         flex: 1,
@@ -106,7 +122,9 @@ const styles = StyleSheet.create({
     },
     column: {
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        paddingLeft: 20,
+        paddingRight: 20
     },
     charactersWithExtraContent: {
         fontSize: 35,
@@ -117,5 +135,14 @@ const styles = StyleSheet.create({
     readingAndMeaningText: {
         fontSize: 15,
         paddingTop: 3
+    },
+    dot: {
+        height: 10,
+        width: 10,
+        borderRadius: 5,
+        zIndex: 10,
+        position: 'absolute',
+        top: 5,
+        left: 5
     }
 })

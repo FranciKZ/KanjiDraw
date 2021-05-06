@@ -6,14 +6,14 @@ export interface IAssignment extends IBase {
 }
 
 export interface IAssignmentData {
-    createdAt: string;
-    subjectId: number;
-    subjectType: string;
-    srsState: number;
-    unlockedAt: string;
-    startedAt: string;
-    passedAt: string;
-    burnedAt: string;
-    availableAt: string;
-    resurrectedAt: string;
+    created_at: string;
+    subject_id: number;
+    subject_type: string;
+    srs_stage: number;
+    unlocked_at: string;
+    started_at: string;
+    passed_at: string;
+    burned_at: string;
+    available_at: string;
+    resurrected_at: string;
 }

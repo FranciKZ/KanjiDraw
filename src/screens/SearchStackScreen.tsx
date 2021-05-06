@@ -1,7 +1,8 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
 import { LevelDetail, SearchHome, SubjectDetails } from '../components';
-
+// add cardStyle: { backgroundColor: '#fff' } 
+// to the screenOptions prop to change background color based on theme
 const SearchStack = createStackNavigator();
 
 export function SearchStackScreen() {

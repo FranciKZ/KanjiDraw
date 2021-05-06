@@ -11,7 +11,7 @@ function Card({ children, style }: ICardProps) {
     const theme = useTheme();
 
     return (
-        <View style={{...defaultStyles.container, ...style, ...theme.primaryBackground}}>
+        <View style={{...defaultStyles.container, ...style, ...theme.primaryCardBackground, shadowColor: theme.primaryBorder.borderColor}}>
             {children}
         </View>
     )
@@ -22,10 +22,9 @@ const defaultStyles = StyleSheet.create({
         marginBottom: 5,
         borderRadius: 5,
         padding: 5,
-        shadowColor: '#000',
         shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.9,
-        shadowRadius: 5,  
+        shadowOpacity: 0.8,
+        shadowRadius: 1,  
         elevation: 2
     },
 });
