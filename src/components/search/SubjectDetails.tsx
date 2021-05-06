@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/Fontisto';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import SoundPlayer from 'react-native-sound-player'
 import { isKatakana, toHiragana } from 'wanakana';
+import { StyledText } from '../shared/StyledText';
 Icon.loadFont();
 interface ISubjectDetailsProps {
     route: any;
@@ -72,14 +73,14 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
         return (
             <>
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
-                    <Text>Name</Text>
+                    {renderHeaderText('Name')}
                     <View>
-                        <Text>Primary: {subjectState!.subject!.data.meanings[0].meaning}</Text>
-                        <Text>Meaning: </Text><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
+                        <StyledText>Primary: {subjectState!.subject!.data.meanings[0].meaning}</StyledText>
+                        <StyledText>Meaning: <Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup></StyledText>
                     </View>
                 </CollapsibleSection>
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
-                    <Text>Found in Kanji</Text>
+                    {renderHeaderText('Found in Kanji')}
                     <View style={theme.viewRow}>
                         {
                             subjectState!.amalgamations!.map((val: ISubject, index: number) => {
@@ -134,8 +135,8 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Meaning')}
                     <View>
-                        <Text>Primary: {primaryMeaning}</Text>
-                        <Text>Meaning: <Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup></Text>
+                        <StyledText>Primary: {primaryMeaning}</StyledText>
+                        <StyledText>Meaning: <Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup></StyledText>
                     </View>
                 </CollapsibleSection>
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
@@ -143,27 +144,27 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
                     <View>
                         <View style={styles.readingViewRow}>
                             <View>
-                                <Text>On'yomi</Text>
-                                <Text>
+                                <StyledText>On'yomi</StyledText>
+                                <StyledText>
                                     {readingConjoiner('onyomi')}
-                                </Text>
+                                </StyledText>
                             </View>
                             <View>
-                                <Text>Kun'yomi</Text>
-                                <Text>
+                                <StyledText>Kun'yomi</StyledText>
+                                <StyledText>
                                     {readingConjoiner('kunyomi')}
-                                </Text>
+                                </StyledText>
                             </View>
                             <View>
-                                <Text>Nanori</Text>
-                                <Text>
+                                <StyledText>Nanori</StyledText>
+                                <StyledText>
                                     {readingConjoiner('nanori')}
-                                </Text>
+                                </StyledText>
                             </View>
                         </View>
                         <View>
-                            <Text>Mnemonic</Text>
-                            <Markup>{subjectState!.subject!.data.reading_mnemonic!}</Markup>
+                            <StyledText>Mnemonic: <Markup>{subjectState!.subject!.data.reading_mnemonic!}</Markup></StyledText>
+                            
                         </View>
                     </View>
                 </CollapsibleSection>
@@ -201,7 +202,7 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
             const audioObjects = audioObjectsMap[toHiragana(val.reading)];
             return (
                 <View key={idx} style={styles.readingViewRow}>
-                    <Text>{val.reading}</Text>
+                    <StyledText>{val.reading}</StyledText>
                     {
                         audioObjects.map((pronunciation: IPronunciation, idx: number) => (
                             <TouchableWithoutFeedback key={`${val.reading}-${idx}`} touchSoundDisabled={true} onPress={() => playAudio(pronunciation.url)}>
@@ -215,8 +216,8 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
 
         const contextSentences = subjectState!.subject!.data.context_sentences!.map((val: IContextSentence, idx: number) => (
             <View key={idx} style={styles.rowView}>
-                <Text>{val.ja}</Text>
-                <Text>{val.en}</Text>
+                <StyledText>{val.ja}</StyledText>
+                <StyledText style={styles.normalText}>{val.en}</StyledText>
             </View>
         ));
 
@@ -229,11 +230,11 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Meaning')}
                     <View>
-                        <Text>Primary: {subjectState!.subject!.data.meanings[0].meaning}</Text>
+                        <StyledText>Primary: {subjectState!.subject!.data.meanings[0].meaning}</StyledText>
                         {
                             alternativeMeanings !== '' && <Text>Alternative: {meaningConjoiner()}</Text>
                         }
-                        <Text>Explanation: </Text><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
+                        <StyledText>Explanation: <Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup></StyledText>
                     </View>
                 </CollapsibleSection>
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
@@ -286,6 +287,9 @@ const styles = StyleSheet.create({
     headingText: {
         fontSize: 20
     },
+    normalText: {
+        fontSize: 15
+    },  
     readingViewRow: {
         flexDirection: 'row',
         justifyContent: 'space-evenly'

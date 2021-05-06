@@ -2080,6 +2080,11 @@
   "resolved" "https://registry.npmjs.org/@types/stack-utils/-/stack-utils-2.0.0.tgz"
   "version" "2.0.0"
 
+"@types/wanakana@^4.0.2":
+  "integrity" "sha512-UtECfmvYsKED/iMV83xIaJCUKuo+wXwaYRM+hZuUeiU+Mg8JIxUyVbvG4dff0M5tQXGOoC9QUZ88jUFlLR0jLQ=="
+  "resolved" "https://registry.npmjs.org/@types/wanakana/-/wanakana-4.0.2.tgz"
+  "version" "4.0.2"
+
 "@types/yargs-parser@*":
   "integrity" "sha512-37RSHht+gzzgYeobbG+KWryeAW8J33Nhr69cjTqSYymXVZEN9NbRYWoYlRtDhHKPVT1FyNKwaTPC1NynKZpzRA=="
   "resolved" "https://registry.npmjs.org/@types/yargs-parser/-/yargs-parser-20.2.0.tgz"
@@ -7034,6 +7039,11 @@
   "resolved" "https://registry.npmjs.org/react-native-screens/-/react-native-screens-3.0.0.tgz"
   "version" "3.0.0"
 
+"react-native-sound-player@^0.10.8":
+  "integrity" "sha512-0osSJ8XFEk+KqTnlQCZJgzc5Eno9NiFcBP3QudYusgqS3Z6YxoujRmjP9NpLiKi5MzDSEm4WcCK6tNJ6Z2lb0A=="
+  "resolved" "https://registry.npmjs.org/react-native-sound-player/-/react-native-sound-player-0.10.8.tgz"
+  "version" "0.10.8"
+
 "react-native-svg@^12.1.1":
   "integrity" "sha512-NIAJ8jCnXGCqGWXkkJ1GTzO4a3Md5at5sagYV8Vh4MXYnL4z5Rh428Wahjhh+LIjx40EE5xM5YtwyJBqOIba2Q=="
   "resolved" "https://registry.npmjs.org/react-native-svg/-/react-native-svg-12.1.1.tgz"
@@ -8584,6 +8594,11 @@
   "version" "1.0.7"
   dependencies:
     "makeerror" "1.0.x"
+
+"wanakana@^4.0.2":
+  "integrity" "sha512-lBFtnLJhTpp5wQBdH7TrOHhLxqmUabAfL86plNN8+iffyhosjZyx+kkO8KEBGR8zWH5nxSQ67oyx3W/lcEC8sg=="
+  "resolved" "https://registry.npmjs.org/wanakana/-/wanakana-4.0.2.tgz"
+  "version" "4.0.2"
 
 "warn-once@^0.0.1":
   "integrity" "sha512-Sh/kR0dQ9Tlr70E2zuR8mZ0yxmN9kGMNfvlwWWRi7frSox2uRC7U659Le8jBIqvjykSbvo9JX9ttsqw4vZPLmA=="

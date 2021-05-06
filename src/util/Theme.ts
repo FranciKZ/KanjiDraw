@@ -22,7 +22,7 @@ export const themes = {
             borderColor: 'rgba(0,0,0,0.1)'
         },
         primaryText: {
-            color: '#707070'
+            fontSize: 16
         },
         secondaryText: {
             color: '#fff'
@@ -36,8 +36,17 @@ export const themes = {
             flexWrap: 'wrap',
             justifyContent: 'center'
         },
-        primaryBackground: {
+        primaryCardBackground: {
             backgroundColor: '#fff'
+        },
+        primaryBurned: {
+            color: 'rgb(80, 80, 80)'
+        },
+        primaryLocked: {
+            color: 'rgb(205, 92, 92)'
+        },
+        primaryProgress: {
+            color: 'rgb(124, 252, 0)'
         }
     }),
     dark: StyleSheet.create({
@@ -68,7 +77,7 @@ export const themes = {
         secondaryText: {
             color: '#fff'
         },
-        primaryBackground: {
+        primaryCardBackground: {
             backgroundColor: '#fff'
         },
         viewRow: {
@@ -76,6 +85,15 @@ export const themes = {
             flexDirection: 'row',
             flexWrap: 'wrap',
             justifyContent: 'center'
+        },        
+        primaryBurned: {
+            color: 'rgb(80, 80, 80)'
+        },
+        primaryLocked: {
+            color: 'rgb(205, 92, 92)'
+        },
+        primaryProgress: {
+            color: 'rgb(124, 252, 0)'
         }
     })
 }

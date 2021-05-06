@@ -1,49 +1,54 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { RefreshControl, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { ISummaryData, ISummaryResponse } from '../../models';
 import { useTheme } from '../../util/Theme';
 import { WaniWrapper } from '../../util/WaniWrapper';
 
 export function Home() {
     const [summary, setSummary] = useState<ISummaryResponse | undefined>(undefined);
+    const [loading, setLoading] = useState(false);
     const theme = useTheme();
     
-    useEffect(() => {
-        const getSummary = async () => {
-            const response = await WaniWrapper.getSummary();
-            if (response) {
-                setSummary(response);
-            }
+    const getSummary = async () => {
+        setLoading(true);
+        const response = await WaniWrapper.getSummary();
+
+        if (response) {
+            setSummary(response);
         }
+
+        setLoading(false);
+    }
+
+    useEffect(() => {
 
         getSummary();
     }, [])
 
     const calculateReviews = () => {
         let total = 0;
-
         if (summary) {
-            summary.data.reviews.forEach((val: ISummaryData) => {
-                if (moment(val.available_at).isBefore(moment())) {
-                    total += val.subject_ids.length
-                }
-            })
+            total = summary.data.reviews[0].subject_ids.length;
         }
 
         return total;
     }
 
+    const onRefresh = () => {
+        getSummary();
+    }
+
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <View style={styles.mainView} >
+            <ScrollView contentContainerStyle={styles.mainView} refreshControl={<RefreshControl refreshing={loading} onRefresh={onRefresh}/>}>
                 <TouchableOpacity
                     style={{ ...styles.touchable, backgroundColor: theme.primaryKanji.color, ...theme.secondaryBorder }}
                 >
                     <Text style={[styles.touchableMainText, theme.secondaryText]}>Lessons</Text>
-                    <View style={{...styles.itemCountView, borderColor: theme.primaryText.color, backgroundColor: theme.secondaryText.color }}>
-                        <Text style={[styles.itemCountText, theme.primaryText]}>{
+                    <View style={{...styles.itemCountView, backgroundColor: theme.secondaryText.color }}>
+                        <Text style={[theme.primaryText, styles.itemCountText]}>{
                             summary
                             ? summary.data.lessons[0].subject_ids.length
                             : 0
@@ -54,11 +59,11 @@ export function Home() {
                     style={{ ...styles.touchable, backgroundColor: theme.primaryRadical.color, ...theme.secondaryBorder }}
                 >
                     <Text style={[styles.touchableMainText, theme.secondaryText]}>Reviews</Text>
-                    <View style={{...styles.itemCountView, borderColor: theme.primaryText.color, backgroundColor: theme.secondaryText.color }}>
-                        <Text style={[styles.itemCountText, theme.primaryText]}>{calculateReviews()}</Text>
+                    <View style={{...styles.itemCountView, backgroundColor: theme.secondaryText.color }}>
+                        <Text style={[theme.primaryText, styles.itemCountText]}>{calculateReviews()}</Text>
                     </View>
                 </TouchableOpacity>
-            </View>
+            </ScrollView>
         </SafeAreaView>
     )
 }
