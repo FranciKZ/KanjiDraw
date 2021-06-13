@@ -23,8 +23,8 @@ export function LevelSelector({ route, navigation }: ILevelSelector) {
         for (let i = 1; i <= 60; i++) { 
             if ((i % 10 == 1 || i == 1)) {
                 elements.push( 
-                    <View style={{flexDirection:'row', flexBasis: '100%'}}>
-                    <Text>{ i == 1 ? difficulties[0] : difficulties[((i - 1)/10)]}</Text> 
+                    <View key={`${i}-difficulties`} style={{flexDirection:'row', flexBasis: '100%'}}>
+                        <Text>{ i == 1 ? difficulties[0] : difficulties[((i - 1)/10)]}</Text> 
                     </View>
                 );
             } 

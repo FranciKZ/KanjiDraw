@@ -43,7 +43,10 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
                     <CollapsibleSection
                         iconSize={style.sectionHeaderText.fontSize * ICON_SCALING}
                     >
-                        <Text style={style.sectionHeaderText}>{sectionText}</Text>
+                        <View style={{ display: 'flex', flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <Text style={style.sectionHeaderText}>{sectionText}</Text>
+                            <Text>{buttons.length} subjects</Text>
+                        </View>
                         <View style={ filter !== 'vocabulary' ? style.viewRow : {}}>
                             {buttons}
                         </View>
@@ -60,7 +63,7 @@ export function LevelDetail({ route, navigation }: ILevelDetailProps) {
         <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
             <ScrollView>
                 <Card style={style.viewRow}>
-                    <Text style={{ fontSize: 30, ...theme.primaryText }}>Level: {levelNumber}</Text>
+                    <Text style={{ ...theme.primaryText, fontSize: 30 }}>Level: {levelNumber}</Text>
                 </Card>
                 {
                     displaySection('radical', 'Radicals')
