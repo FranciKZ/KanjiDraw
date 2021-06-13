@@ -18,9 +18,16 @@ export function LevelSelector({ route, navigation }: ILevelSelector) {
     }
 
     const generateLevels = () => {
-        const elements: JSX.Element[] = [];
-
-        for (let i = 1; i <= 60; i++) {
+        const elements: JSX.Element[] = []; 
+        const difficulties = ['快 PLEASANT','苦 PAINFUL','死 DEATH','地獄 HELL','天国 PARADISE','現実 REALITY']
+        for (let i = 1; i <= 60; i++) { 
+            if ((i % 10 == 1 || i == 1)) {
+                elements.push( 
+                    <View style={{flexDirection:'row', flexBasis: '100%'}}>
+                    <Text>{ i == 1 ? difficulties[0] : difficulties[((i - 1)/10)]}</Text> 
+                    </View>
+                );
+            } 
             elements.push(
                 <TouchableWithoutFeedback key={i} style={[styles.individualItem, theme.primaryBorder, theme.primaryItemBackground]} onPress={() => navigate(i)}>
                     <Text style={theme.primaryText}>{i}</Text>
