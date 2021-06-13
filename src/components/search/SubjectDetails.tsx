@@ -76,7 +76,7 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
                     {renderHeaderText('Name')}
                     <View>
                         <StyledText>Primary: {subjectState!.subject!.data.meanings[0].meaning}</StyledText>
-                        <StyledText>Meaning: <Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup></StyledText>
+                        <StyledText>Meaning: </StyledText><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
                     </View>
                 </CollapsibleSection>
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
@@ -136,7 +136,7 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
                     {renderHeaderText('Meaning')}
                     <View>
                         <StyledText>Primary: {primaryMeaning}</StyledText>
-                        <StyledText>Meaning: <Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup></StyledText>
+                        <StyledText>Meaning: </StyledText><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
                     </View>
                 </CollapsibleSection>
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
@@ -163,8 +163,7 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
                             </View>
                         </View>
                         <View>
-                            <StyledText>Mnemonic: <Markup>{subjectState!.subject!.data.reading_mnemonic!}</Markup></StyledText>
-                            
+                            <StyledText>Mnemonic: </StyledText><Markup>{subjectState!.subject!.data.reading_mnemonic!}</Markup>    
                         </View>
                     </View>
                 </CollapsibleSection>
@@ -232,9 +231,9 @@ export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
                     <View>
                         <StyledText>Primary: {subjectState!.subject!.data.meanings[0].meaning}</StyledText>
                         {
-                            alternativeMeanings !== '' && <Text>Alternative: {meaningConjoiner()}</Text>
+                            alternativeMeanings !== '' && <StyledText>Alternative: {meaningConjoiner()}</StyledText>
                         }
-                        <StyledText>Explanation: <Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup></StyledText>
+                        <StyledText>Explanation: </StyledText><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
                     </View>
                 </CollapsibleSection>
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
