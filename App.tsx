@@ -9,6 +9,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { KeyPrompt } from './src/components';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeContext, themes } from './src/util/Theme';
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
 Icon.loadFont();
 
 const Tab = createBottomTabNavigator();
@@ -39,47 +41,51 @@ export default function App() {
     }, [])
 
     return (
-        modalVisible 
-        ? <KeyPrompt modalVisible={modalVisible} setKey={setKey} />
-        :
-        <SafeAreaProvider>
-            <ThemeContext.Provider value={themes.light}>
-                <NavigationContainer>
-                    <Tab.Navigator 
-                        screenOptions={({ route }) => ({ 
-                            headerShown: false,
-                            tabBarIcon: ({ focused, color }) => {
-                                let iconName = 'home';
-                                if (route.name === 'ProfileStackScreen') {
-                                    iconName = 'person';
-                                } else if (route.name === 'SearchStackScreen') {
-                                    iconName = 'search';
-                                }
+        <Provider store={store}>
+            {
+                modalVisible 
+                ? <KeyPrompt modalVisible={modalVisible} setKey={setKey} />
+                :
+                <SafeAreaProvider>
+                    <ThemeContext.Provider value={themes.light}>
+                        <NavigationContainer>
+                            <Tab.Navigator 
+                                screenOptions={({ route }) => ({ 
+                                    headerShown: false,
+                                    tabBarIcon: ({ focused, color }) => {
+                                        let iconName = 'home';
+                                        if (route.name === 'ProfileStackScreen') {
+                                            iconName = 'person';
+                                        } else if (route.name === 'SearchStackScreen') {
+                                            iconName = 'search';
+                                        }
 
-                                return <Icon size={40} color={color} name={iconName} />
-                            },
-                            tabBarButton: (props) => <TouchableHighlight {...props} underlayColor="#DDDDDD" />
-                        })}
-                    >
-                        <Tab.Screen
-                            name='HomeStackScreen'
-                            component={HomeStackScreen}
-                            options={{ tabBarShowLabel: false }}
-                        />
-                        <Tab.Screen
-                            name='ProfileStackScreen'
-                            component={ProfileStackScreen}
-                            options={{ tabBarShowLabel: false }}
-                        />
-                        <Tab.Screen
-                            name='SearchStackScreen'
-                            component={SearchStackScreen}
-                            options={{ tabBarShowLabel: false }}
-                        />
-                    </Tab.Navigator>
-                </NavigationContainer>
-            </ThemeContext.Provider>
-        </SafeAreaProvider>
+                                        return <Icon size={40} color={color} name={iconName} />
+                                    },
+                                    tabBarButton: (props) => <TouchableHighlight {...props} underlayColor="#DDDDDD" />
+                                })}
+                            >
+                                <Tab.Screen
+                                    name='HomeStackScreen'
+                                    component={HomeStackScreen}
+                                    options={{ tabBarShowLabel: false }}
+                                />
+                                <Tab.Screen
+                                    name='ProfileStackScreen'
+                                    component={ProfileStackScreen}
+                                    options={{ tabBarShowLabel: false }}
+                                />
+                                <Tab.Screen
+                                    name='SearchStackScreen'
+                                    component={SearchStackScreen}
+                                    options={{ tabBarShowLabel: false }}
+                                />
+                            </Tab.Navigator>
+                        </NavigationContainer>
+                    </ThemeContext.Provider>
+                </SafeAreaProvider>
+            }
+        </Provider>
     );
 };
 
