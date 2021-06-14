@@ -13,10 +13,15 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import SoundPlayer from 'react-native-sound-player'
 import { isKatakana, toHiragana } from 'wanakana';
 import { StyledText } from '../shared/StyledText';
+import { SubjectActions } from '../../redux/actions';
+import { RootState } from '../../redux/reducers';
+import { connect } from 'react-redux';
 Icon.loadFont();
 interface ISubjectDetailsProps {
     route: any;
     navigation: any;
+    subjects: {[key: string]: any};
+    getSubject: (id: number) => void;
 }
 
 type AudioMap = Record<string, IPronunciation[]>;
@@ -29,22 +34,23 @@ interface ISubjectDetailsState {
     visuallySimilar: ISubject[] | undefined;
 }
 
-export function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
+function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDetailsProps) {
     const theme = useTheme();
     const { subjectId } = route.params;
     const [subjectState, setSubjectState] = useState<ISubjectDetailsState>();
-
+    // TODO: SOMEHOW EITHER GET SAGA TO RETURN API RESPONSE OR USEEFFECT ON SUBJECTS TO MAP TO SUBJECTSTATE
+    
     useEffect(() => {
-        const getSubject = async () => {
-            // once this returns, we'll have to fetch study materials, and all amalgamation/component/visual similar subjects
-            // Almagamation = this subject is a part of said subject
-            // Components = subjects that make up this subject
-            const subjectData = await WaniWrapper.getAllSubjectData(subjectId);
+        // const getSubject = async () => {
+        //     // once this returns, we'll have to fetch study materials, and all amalgamation/component/visual similar subjects
+        //     // Almagamation = this subject is a part of said subject
+        //     // Components = subjects that make up this subject
+        //     const subjectData = await WaniWrapper.getAllSubjectData(subjectId);
 
-            setSubjectState(subjectData);
-        };
+        //     setSubjectState(subjectData);
+        // };
 
-        getSubject();
+        getSubject(subjectId);
     }, [])
 
     const renderSections = (): JSX.Element => {
@@ -300,3 +306,13 @@ const styles = StyleSheet.create({
         flexDirection: 'column'
     }
 });
+
+const mapStateToProps = (state: RootState) => ({
+    subject: state.subjectState?.subjects
+});
+
+const mapDispatchToProps = (dispatch: any) => ({
+    getSubject: (id: number) => dispatch({ type: SubjectActions.GET_SUBJECT_REQUESTED, subjectId: id})
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(SubjectDetails);
