@@ -20,7 +20,7 @@ Icon.loadFont();
 interface ISubjectDetailsProps {
     route: any;
     navigation: any;
-    subjects: {[key: string]: any};
+    subjects: Record<string, ISubject>;
     getSubject: (id: number) => void;
 }
 
@@ -38,20 +38,21 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
     const theme = useTheme();
     const { subjectId } = route.params;
     const [subjectState, setSubjectState] = useState<ISubjectDetailsState>();
-    // TODO: SOMEHOW EITHER GET SAGA TO RETURN API RESPONSE OR USEEFFECT ON SUBJECTS TO MAP TO SUBJECTSTATE
     
     useEffect(() => {
-        // const getSubject = async () => {
-        //     // once this returns, we'll have to fetch study materials, and all amalgamation/component/visual similar subjects
-        //     // Almagamation = this subject is a part of said subject
-        //     // Components = subjects that make up this subject
-        //     const subjectData = await WaniWrapper.getAllSubjectData(subjectId);
-
-        //     setSubjectState(subjectData);
-        // };
-
         getSubject(subjectId);
     }, [])
+
+    useEffect(() => {
+        if (subjects && subjects[subjectId]) {
+            const subject = subjects && subjects[subjectId];
+            const components = subject.data.component_subject_ids?.map((val: number) => subjects[val]);
+            const amalgamations = subject.data.amalgamation_subject_ids?.map((val: number) => subjects[val]);
+            const visuallySimilar = subject.data.visually_similar_subject_ids?.map((val: number) => subjects[val]);
+            setSubjectState({ subject, components, amalgamations, visuallySimilar });
+            debugger;
+        }
+    }, [subjects])
 
     const renderSections = (): JSX.Element => {
         let result: JSX.Element = <></>;
@@ -308,11 +309,11 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state: RootState) => ({
-    subject: state.subjectState?.subjects
+    subjects: state.subjectState.subjects
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    getSubject: (id: number) => dispatch({ type: SubjectActions.GET_SUBJECT_REQUESTED, subjectId: id})
+    getSubject: (id: number) => dispatch({ type: SubjectActions.GET_SUBJECT, subjectId: id })
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SubjectDetails);

@@ -2,7 +2,7 @@ import { Moment } from "moment";
 import { IBase } from "./IBase";
 
 export interface ISubjectWithRelations {
-    subject: ISubject | undefined;
+    subject: ISubject
     components: ISubject[] | undefined;
     amalgamations: ISubject[] | undefined;
     visuallySimilar: ISubject[] | undefined;

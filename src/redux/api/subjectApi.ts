@@ -21,7 +21,7 @@ export async function getAllSubjectData(subjectId: number): Promise<ISubjectWith
     let amalgamations = undefined;
     let components = undefined;
     let visuallySimilar = undefined;
-    debugger;
+
     if (subject.object !== 'vocabulary') {
         const amalgamationsResponse = await getSubjects(subject.data.amalgamation_subject_ids!);
 
