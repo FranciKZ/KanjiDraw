@@ -33,7 +33,7 @@ interface ISubjectDetailsState {
     visuallySimilar: ISubject[] | undefined;
 }
 
-const test = (subjectState: Record<string, ISubject>, subjectId: number) => {
+const subjectsAreGood = (subjectState: Record<string, ISubject>, subjectId: number) => {
     const subject = subjectState[subjectId];
     const componentsGood = subject && subject.data.component_subject_ids ? subject.data.component_subject_ids.every((val: number) => !!subjectState[val]) : true;
     const amalgamationsGood = subject && subject.data.amalgamation_subject_ids ? subject.data.amalgamation_subject_ids.every((val: number) => !!subjectState[val]) : true;
@@ -52,7 +52,7 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
     }, [])
 
     useEffect(() => {
-        if (test(subjects, subjectId)) {
+        if (subjectsAreGood(subjects, subjectId)) {
             const subject = subjects[subjectId];
             const components = subject.data.component_subject_ids?.map((val: number) => subjects[val]);
             const amalgamations = subject.data.amalgamation_subject_ids?.map((val: number) => subjects[val]);
