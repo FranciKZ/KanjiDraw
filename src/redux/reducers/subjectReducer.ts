@@ -19,7 +19,6 @@ export default(state = initialState, { type, payload }: IAction) => {
         case SubjectActions.UPSERT_NOTE:
             return state;
         case SubjectActions.SET_SUBJECTS: 
-            debugger;
             return { ...state, subjects: { ...state.subjects, ...payload }, fetchingSubjects: false };
         case SubjectActions.FETCHING_SUBJECTS:
             return { ...state, fetchingSubjects: true };

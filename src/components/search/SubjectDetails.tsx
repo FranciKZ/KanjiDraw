@@ -3,7 +3,6 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { IContextSentence, IKanjiReading, IMeaning, IPronunciation, ISubject } from '../../models'
 import { useTheme } from '../../util/Theme';
-import { WaniWrapper } from '../../util/WaniWrapper';
 import { CollapsibleSection } from '../shared/CollapsibleSection';
 import { Markup } from '../shared/Markup';
 import { Subject } from '../shared/Subject';
@@ -15,15 +14,13 @@ import { isKatakana, toHiragana } from 'wanakana';
 import { StyledText } from '../shared/StyledText';
 import { SubjectActions } from '../../redux/actions';
 import { RootState } from '../../redux/reducers';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
+import Loading from '../shared/Loading';
 Icon.loadFont();
-interface ISubjectDetailsProps {
+
+interface ISubjectDetailsProps extends ReduxProps {
     route: any;
     navigation: any;
-    subjects: Record<string, ISubject>;
-    loading: boolean;
-    errorMessage: string | undefined;
-    getSubject: (id: number) => void;
 }
 
 type AudioMap = Record<string, IPronunciation[]>;
@@ -45,7 +42,7 @@ const test = (subjectState: Record<string, ISubject>, subjectId: number) => {
     return !!subject && componentsGood && amalgamationsGood && visualGood;
 }
 
-function SubjectDetails({ route, navigation, subjects, getSubject, loading, errorMessage }: ISubjectDetailsProps) {
+function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDetailsProps) {
     const theme = useTheme();
     const { subjectId } = route.params;
     const [subjectState, setSubjectState] = useState<ISubjectDetailsState>();
@@ -281,22 +278,23 @@ function SubjectDetails({ route, navigation, subjects, getSubject, loading, erro
     }
 
     return (
-        <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
-            <ScrollView>
-                {
-                    loading ? loading :
-                    (subjectState && subjectState.subject) &&
-                    <>
-                        <View style={[theme.viewRow, styles.subjectHeader]}>
-                            <View>
-                                <Subject item={subjectState.subject} displayExtraData={false} />
+        <Loading>
+            <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
+                <ScrollView>
+                    {
+                        (subjectState && subjectState.subject) &&
+                        <>
+                            <View style={[theme.viewRow, styles.subjectHeader]}>
+                                <View>
+                                    <Subject item={subjectState.subject} displayExtraData={false} />
+                                </View>
                             </View>
-                        </View>
-                        {renderSections()}
-                    </>
-                }
-            </ScrollView>
-        </SafeAreaView>
+                            {renderSections()}
+                        </>
+                    }
+                </ScrollView>
+            </SafeAreaView>
+        </Loading>
     )
 }
 
@@ -319,14 +317,17 @@ const styles = StyleSheet.create({
     }
 });
 
+
 const mapStateToProps = (state: RootState) => ({
-    subjects: state.subjectState.subjects,
-    loading: state.sagaState.loading,
-    errorMessage: state.subjectState.errorMessage
+    subjects: state.subjectState.subjects
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
     getSubject: (id: number) => dispatch({ type: SubjectActions.GET_SUBJECT_REQUEST, subjectId: id })
 });
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+type ReduxProps = ConnectedProps<typeof connector>;
 
 export default connect(mapStateToProps, mapDispatchToProps)(SubjectDetails);
