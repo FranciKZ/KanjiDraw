@@ -5,13 +5,10 @@ import { SubjectActions } from '../actions';
 
 interface ISubjectState {
     subjects: Record<string, ISubject>;
-    fetchingSubjects: boolean;
-    errorMessage?: string;
 };
 
 const initialState: ISubjectState = {
     subjects: {},
-    fetchingSubjects: false,
 }
 
 export default(state = initialState, { type, payload }: IAction) => {
@@ -19,11 +16,7 @@ export default(state = initialState, { type, payload }: IAction) => {
         case SubjectActions.UPSERT_NOTE:
             return state;
         case SubjectActions.SET_SUBJECTS: 
-            return { ...state, subjects: { ...state.subjects, ...payload }, fetchingSubjects: false };
-        case SubjectActions.FETCHING_SUBJECTS:
-            return { ...state, fetchingSubjects: true };
-        case SubjectActions.FETCHING_SUBJECTS_FAILURE:
-            return { ...state, fetchingSubjects: false, errorMessage: payload };
+            return { ...state, subjects: { ...state.subjects, ...payload } };
         default: 
             return state;
     }

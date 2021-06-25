@@ -42,9 +42,8 @@ function* getLevelData({ levelNumber }: { levelNumber: number, type: string }) {
     // debugger;
     if (!levels[levelNumber]) {
         const levelData: SagaReturnType<typeof getLevel> = yield call(getLevel, levelNumber);
-        
-        yield put({ type: LevelActions.SET_LEVEL, payload: levelNumber });
-        yield put({ type: SubjectActions.SET_SUBJECTS, payload: levelData.data });
+        yield put({ type: SubjectActions.SET_SUBJECTS, payload: mapSubjectDataToStoreStructure(levelData.data) });
+        yield put({ type: LevelActions.SET_LEVEL, payload: { id: levelNumber, data: levelData.data.map((val: ISubject) => val.id) } });
     }
 
     yield put({ type: SagaActions.FETCH_SUCCESSFUL });
@@ -56,5 +55,5 @@ function* wrapper(callback: any) {
 
 export default function* waniSaga() {
     yield takeEvery(SubjectActions.GET_SUBJECT_REQUEST, getSubjectData);
-    yield takeEvery(LevelActions.GET_LEVEL, getLevelData);
+    yield takeEvery(LevelActions.GET_LEVEL_REQUEST, getLevelData);
 }

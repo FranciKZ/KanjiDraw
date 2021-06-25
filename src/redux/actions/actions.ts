@@ -1,14 +1,11 @@
 export enum SubjectActions {
     UPSERT_NOTE = 'upsert_note',
     SET_SUBJECTS = 'set_subjects',
-    GET_SUBJECT_REQUEST = 'get_subjects_request',
-    FETCHING_SUBJECTS = 'fetching_subjects',
-    FETCHING_SUBJECTS_SUCCESS = 'fetching_subjects_success',
-    FETCHING_SUBJECTS_FAILURE = 'fetching_subjects_failure'
+    GET_SUBJECT_REQUEST = 'get_subjects_request'
 };
 
 export enum LevelActions {
-    GET_LEVEL = 'get_level',
+    GET_LEVEL_REQUEST = 'get_level_request',
     SET_LEVEL = 'set_level'
 };
 
