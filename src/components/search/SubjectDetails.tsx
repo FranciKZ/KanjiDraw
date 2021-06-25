@@ -21,6 +21,8 @@ interface ISubjectDetailsProps {
     route: any;
     navigation: any;
     subjects: Record<string, ISubject>;
+    loading: boolean;
+    errorMessage: string | undefined;
     getSubject: (id: number) => void;
 }
 
@@ -34,7 +36,16 @@ interface ISubjectDetailsState {
     visuallySimilar: ISubject[] | undefined;
 }
 
-function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDetailsProps) {
+const test = (subjectState: Record<string, ISubject>, subjectId: number) => {
+    const subject = subjectState[subjectId];
+    const componentsGood = subject && subject.data.component_subject_ids ? subject.data.component_subject_ids.every((val: number) => !!subjectState[val]) : true;
+    const amalgamationsGood = subject && subject.data.amalgamation_subject_ids ? subject.data.amalgamation_subject_ids.every((val: number) => !!subjectState[val]) : true;
+    const visualGood = subject && subject.data.visually_similar_subject_ids ? subject.data.visually_similar_subject_ids.every((val: number) => !!subjectState[val]) : true;
+
+    return !!subject && componentsGood && amalgamationsGood && visualGood;
+}
+
+function SubjectDetails({ route, navigation, subjects, getSubject, loading, errorMessage }: ISubjectDetailsProps) {
     const theme = useTheme();
     const { subjectId } = route.params;
     const [subjectState, setSubjectState] = useState<ISubjectDetailsState>();
@@ -44,13 +55,12 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
     }, [])
 
     useEffect(() => {
-        if (subjects && subjects[subjectId]) {
-            const subject = subjects && subjects[subjectId];
+        if (test(subjects, subjectId)) {
+            const subject = subjects[subjectId];
             const components = subject.data.component_subject_ids?.map((val: number) => subjects[val]);
             const amalgamations = subject.data.amalgamation_subject_ids?.map((val: number) => subjects[val]);
             const visuallySimilar = subject.data.visually_similar_subject_ids?.map((val: number) => subjects[val]);
             setSubjectState({ subject, components, amalgamations, visuallySimilar });
-            debugger;
         }
     }, [subjects])
 
@@ -274,6 +284,7 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
         <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
             <ScrollView>
                 {
+                    loading ? loading :
                     (subjectState && subjectState.subject) &&
                     <>
                         <View style={[theme.viewRow, styles.subjectHeader]}>
@@ -309,11 +320,13 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state: RootState) => ({
-    subjects: state.subjectState.subjects
+    subjects: state.subjectState.subjects,
+    loading: state.sagaState.loading,
+    errorMessage: state.subjectState.errorMessage
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    getSubject: (id: number) => dispatch({ type: SubjectActions.GET_SUBJECT, subjectId: id })
+    getSubject: (id: number) => dispatch({ type: SubjectActions.GET_SUBJECT_REQUEST, subjectId: id })
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(SubjectDetails);
