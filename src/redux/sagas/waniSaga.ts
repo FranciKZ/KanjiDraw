@@ -5,10 +5,17 @@ import { getAllSubjectData, getLevel, getSubjects } from '../api';
 import { getLevelState, getSubjectState } from './selectors';
 import { getNeededSubjectArray, mapSubjectDataToStoreStructure, mapSubjectRelationsDataToStoreStructure } from './util';
 
+const sleep = (milliseconds: number) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
+  
+
 function* getSubjectData({ subjectId }: { subjectId: number, type: string }){
     const subjects: Record<string, ISubject> = yield select(getSubjectState);
     yield put({ type: SagaActions.FETCHING_DATA });
     // TODO clean this fucking up holy moly
+    // yield sleep(100000);
+    // console.log('hellooooooo');
     try {
         if (!subjects[subjectId]) {
             const subjectData: SagaReturnType<typeof getAllSubjectData> = yield call(getAllSubjectData, subjectId);
@@ -31,13 +38,16 @@ function* getSubjectData({ subjectId }: { subjectId: number, type: string }){
 
 function* getLevelData({ levelNumber }: { levelNumber: number, type: string }) {
     const levels: Record<string, boolean> = yield select(getLevelState);
-
+    yield put({ type: SagaActions.FETCHING_DATA });
+    // debugger;
     if (!levels[levelNumber]) {
         const levelData: SagaReturnType<typeof getLevel> = yield call(getLevel, levelNumber);
         
         yield put({ type: LevelActions.SET_LEVEL, payload: levelNumber });
         yield put({ type: SubjectActions.SET_SUBJECTS, payload: levelData.data });
     }
+
+    yield put({ type: SagaActions.FETCH_SUCCESSFUL });
 }
 
 function* wrapper(callback: any) {
