@@ -7,7 +7,7 @@ interface ICardProps {
     children: any;
 }
 
-function Card({ children, style }: ICardProps) {
+export function Card({ children, style }: ICardProps) {
     const theme = useTheme();
 
     return (
@@ -28,5 +28,3 @@ const defaultStyles = StyleSheet.create({
         elevation: 2
     },
 });
-
-export default Card;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { LayoutAnimation, Platform, StyleSheet, Text, UIManager, View } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import Card from './Card';
+import { Card } from './Card';
 Icon.loadFont();
 interface ICollapsibleSectionProps {
     children: any;

@@ -14,3 +14,7 @@ export enum SagaActions {
     FETCH_SUCCESSFUL = 'fetch_successful',
     FETCH_FAILURE = 'fetch_failure'
 }
+
+export const RequestSubjects = (subjectId: number) => ({ type: SubjectActions.GET_SUBJECT_REQUEST, subjectId });
+
+export const RequestLevel = (levelNumber: number) => ({ type: LevelActions.GET_LEVEL_REQUEST, levelNumber });

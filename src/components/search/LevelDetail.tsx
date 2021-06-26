@@ -3,14 +3,10 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { connect, ConnectedProps } from 'react-redux';
 import { ISubject } from '../../models';
-import { LevelActions } from '../../redux/actions';
+import { RequestLevel } from '../../redux/actions';
 import { RootState } from '../../redux/reducers';
 import { useTheme } from '../../util/Theme';
-import { WaniWrapper } from '../../util/WaniWrapper';
-import Card from '../shared/Card';
-import { CollapsibleSection } from '../shared/CollapsibleSection';
-import Loading from '../shared/Loading';
-import SubjectButton from '../shared/SubjectButton';
+import { Card, CollapsibleSection, Loading, SubjectButton } from '../shared';
 
 interface ILevelDetailProps extends ReduxProps {
     route: any;
@@ -110,7 +106,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    getLevel: (id: number) => dispatch({ type: LevelActions.GET_LEVEL_REQUEST, levelNumber: id })
+    getLevel: (id: number) => dispatch(RequestLevel(id))
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

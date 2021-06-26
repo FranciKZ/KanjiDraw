@@ -7,15 +7,11 @@ import { getNeededSubjectArray, mapSubjectDataToStoreStructure, mapSubjectRelati
 
 const sleep = (milliseconds: number) => {
     return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }
-  
+};
 
 function* getSubjectData({ subjectId }: { subjectId: number, type: string }){
     const subjects: Record<string, ISubject> = yield select(getSubjectState);
     yield put({ type: SagaActions.FETCHING_DATA });
-    // TODO clean this fucking up holy moly
-    // yield sleep(100000);
-    // console.log('hellooooooo');
     try {
         if (!subjects[subjectId]) {
             const subjectData: SagaReturnType<typeof getAllSubjectData> = yield call(getAllSubjectData, subjectId);
@@ -29,28 +25,27 @@ function* getSubjectData({ subjectId }: { subjectId: number, type: string }){
 
             yield put({ type: SubjectActions.SET_SUBJECTS, payload: newSubjects });
         }
-
-        yield put({ type: SagaActions.FETCH_SUCCESSFUL });
     } catch (e) {
         yield put({ type: SagaActions.FETCH_FAILURE, message: 'Failed to fetch subject data.' });
+    } finally {
+        yield put({ type: SagaActions.FETCH_SUCCESSFUL });
     }
 }
 
 function* getLevelData({ levelNumber }: { levelNumber: number, type: string }) {
     const levels: Record<string, boolean> = yield select(getLevelState);
     yield put({ type: SagaActions.FETCHING_DATA });
-    // debugger;
-    if (!levels[levelNumber]) {
-        const levelData: SagaReturnType<typeof getLevel> = yield call(getLevel, levelNumber);
-        yield put({ type: SubjectActions.SET_SUBJECTS, payload: mapSubjectDataToStoreStructure(levelData.data) });
-        yield put({ type: LevelActions.SET_LEVEL, payload: { id: levelNumber, data: levelData.data.map((val: ISubject) => val.id) } });
+    try {
+        if (!levels[levelNumber]) {
+            const levelData: SagaReturnType<typeof getLevel> = yield call(getLevel, levelNumber);
+            yield put({ type: SubjectActions.SET_SUBJECTS, payload: mapSubjectDataToStoreStructure(levelData.data) });
+            yield put({ type: LevelActions.SET_LEVEL, payload: { levelNumber, data: levelData.data.map((val: ISubject) => val.id) } });
+        }
+    } catch (e) {
+        yield put({ type: SagaActions.FETCH_FAILURE, message: 'Failed to fetch subject data.' });
+    } finally {
+        yield put({ type: SagaActions.FETCH_SUCCESSFUL });
     }
-
-    yield put({ type: SagaActions.FETCH_SUCCESSFUL });
-}
-
-function* wrapper(callback: any) {
-
 }
 
 export default function* waniSaga() {
