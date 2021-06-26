@@ -10,7 +10,7 @@ interface IItemProps {
     push?: boolean;
 }
 
-function SubjectButton({ item, navigation, push = false, displayExtraData = true }: IItemProps) {
+export function SubjectButton({ item, navigation, push = false, displayExtraData = true }: IItemProps) {
     const navigate = () => {
         if (push) {
             navigation.push('SubjectDetails', { subjectId: item.id });
@@ -28,5 +28,3 @@ function SubjectButton({ item, navigation, push = false, displayExtraData = true
         </TouchableWithoutFeedback>
     )
 }
-
-export default SubjectButton;

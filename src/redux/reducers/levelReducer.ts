@@ -1,5 +1,3 @@
-
-import { ISubject } from '../../models';
 import { IAction } from '../../models/IAction';
 import { LevelActions } from '../actions';
 
@@ -15,7 +13,7 @@ export default(state = initialState, { type, payload }: IAction) => {
     switch(type) {
         case LevelActions.SET_LEVEL:
             const newLevels = { ...state.levels };
-            newLevels[payload.id] = payload.data;
+            newLevels[payload.levelNumber] = payload.data;
 
             return { ...state, levels: newLevels };
         default: 

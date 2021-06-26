@@ -3,19 +3,15 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { IContextSentence, IKanjiReading, IMeaning, IPronunciation, ISubject } from '../../models'
 import { useTheme } from '../../util/Theme';
-import { CollapsibleSection } from '../shared/CollapsibleSection';
-import { Markup } from '../shared/Markup';
-import { Subject } from '../shared/Subject';
-import SubjectButton from '../shared/SubjectButton';
+import { CollapsibleSection, Loading, Markup, Subject, SubjectButton, StyledText } from '../shared';
 import Icon from 'react-native-vector-icons/Fontisto';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import SoundPlayer from 'react-native-sound-player'
 import { isKatakana, toHiragana } from 'wanakana';
-import { StyledText } from '../shared/StyledText';
-import { SubjectActions } from '../../redux/actions';
+import { RequestSubjects } from '../../redux/actions';
 import { RootState } from '../../redux/reducers';
 import { connect, ConnectedProps } from 'react-redux';
-import Loading from '../shared/Loading';
+import { subjectsAreGood } from '../../util/subjectHelpers';
 Icon.loadFont();
 
 interface ISubjectDetailsProps extends ReduxProps {
@@ -31,15 +27,6 @@ interface ISubjectDetailsState {
     components: ISubject[] | undefined;
     amalgamations: ISubject[] | undefined;
     visuallySimilar: ISubject[] | undefined;
-}
-
-const subjectsAreGood = (subjectState: Record<string, ISubject>, subjectId: number) => {
-    const subject = subjectState[subjectId];
-    const componentsGood = subject && subject.data.component_subject_ids ? subject.data.component_subject_ids.every((val: number) => !!subjectState[val]) : true;
-    const amalgamationsGood = subject && subject.data.amalgamation_subject_ids ? subject.data.amalgamation_subject_ids.every((val: number) => !!subjectState[val]) : true;
-    const visualGood = subject && subject.data.visually_similar_subject_ids ? subject.data.visually_similar_subject_ids.every((val: number) => !!subjectState[val]) : true;
-
-    return !!subject && componentsGood && amalgamationsGood && visualGood;
 }
 
 function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDetailsProps) {
@@ -245,7 +232,7 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
                     <View>
                         <StyledText>Primary: {subjectState!.subject!.data.meanings[0].meaning}</StyledText>
                         {
-                            alternativeMeanings !== '' && <StyledText>Alternative: {meaningConjoiner()}</StyledText>
+                            alternativeMeanings !== '' && <StyledText>Alternative: {alternativeMeanings}</StyledText>
                         }
                         <StyledText>Explanation: </StyledText><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
                     </View>
@@ -323,11 +310,11 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-    getSubject: (id: number) => dispatch({ type: SubjectActions.GET_SUBJECT_REQUEST, subjectId: id })
+    getSubject: (id: number) => dispatch(RequestSubjects(id))
 });
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
 
 type ReduxProps = ConnectedProps<typeof connector>;
 
-export default connect(mapStateToProps, mapDispatchToProps)(SubjectDetails);
+export default connector(SubjectDetails);
