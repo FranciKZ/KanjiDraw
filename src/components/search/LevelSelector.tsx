@@ -49,7 +49,8 @@ export function LevelSelector({ route, navigation }: ILevelSelector) {
 
 const styles = StyleSheet.create({
     container: {
-        margin: 20
+        marginLeft: 3,
+        marginRight: 3
     },
     individualItem: {
         fontSize: 20,

@@ -1,17 +1,24 @@
-import { createStore, applyMiddleware } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import rootReducer from './reducers';
-import rootSaga from './sagas'
 import { composeWithDevTools } from 'redux-devtools-extension'
+import { configureStore } from '@reduxjs/toolkit';
+import levelReducer from './reducers/levelReducer';
+import subjectReducer from './reducers/subjectReducer';
+import { api } from './api';
 
 const sagaMiddleware = createSagaMiddleware();
 
-const store = createStore(
-    rootReducer,
-    {},
-    composeWithDevTools(applyMiddleware(sagaMiddleware))
-);
+const store = configureStore({
+  reducer: {
+    levelState: levelReducer,
+    subjectState: subjectReducer,
+    [api.reducerPath]: api.reducer,
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware)
+})
 
-sagaMiddleware.run(rootSaga);
+// Infer the `RootState` and `AppDispatch` types from the store itself
+export type RootState = ReturnType<typeof store.getState>
+// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
+export type AppDispatch = typeof store.dispatch
 
 export default store;

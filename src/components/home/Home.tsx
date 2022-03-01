@@ -3,54 +3,34 @@ import React, { useEffect, useState } from 'react'
 import { RefreshControl, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { ISummaryData, ISummaryResponse } from '../../models';
+import { useGetSummaryQuery } from '../../redux/api';
 import { useTheme } from '../../util/Theme';
 import { WaniWrapper } from '../../util/WaniWrapper';
 
 export function Home() {
-    const [summary, setSummary] = useState<ISummaryResponse | undefined>(undefined);
-    const [loading, setLoading] = useState(false);
+    const { data, isLoading } = useGetSummaryQuery();
     const theme = useTheme();
-    
-    const getSummary = async () => {
-        setLoading(true);
-        const response = await WaniWrapper.getSummary();
-
-        if (response) {
-            setSummary(response);
-        }
-
-        setLoading(false);
-    }
-
-    useEffect(() => {
-
-        getSummary();
-    }, [])
 
     const calculateReviews = () => {
         let total = 0;
-        if (summary) {
-            total = summary.data.reviews[0].subject_ids.length;
+        if (data?.data) {
+            total = data.data.reviews[0].subject_ids.length;
         }
 
         return total;
     }
 
-    const onRefresh = () => {
-        getSummary();
-    }
-
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={styles.mainView} refreshControl={<RefreshControl refreshing={loading} onRefresh={onRefresh}/>}>
+            <ScrollView contentContainerStyle={styles.mainView} refreshControl={<RefreshControl refreshing={isLoading} />}>
                 <TouchableOpacity
                     style={{ ...styles.touchable, backgroundColor: theme.primaryKanji.color, ...theme.secondaryBorder }}
                 >
                     <Text style={[styles.touchableMainText, theme.secondaryText]}>Lessons</Text>
                     <View style={{...styles.itemCountView, backgroundColor: theme.secondaryText.color }}>
                         <Text style={[theme.primaryText, styles.itemCountText]}>{
-                            summary
-                            ? summary.data.lessons[0].subject_ids.length
+                            data
+                            ? data.data.lessons[0].subject_ids.length
                             : 0
                         }</Text>
                     </View>

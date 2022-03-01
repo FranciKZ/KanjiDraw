@@ -1,42 +1,34 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { connect, ConnectedProps } from 'react-redux';
+import { connect, ConnectedProps, useDispatch, useSelector } from 'react-redux';
 import { ISubject } from '../../models';
 import { RequestLevel } from '../../redux/actions';
-import { RootState } from '../../redux/reducers';
+import { useGetLevelByNumberQuery } from '../../redux/api';
+import { RootState } from '../../redux/store';
 import { useTheme } from '../../util/Theme';
 import { Card, CollapsibleSection, Loading, SubjectButton } from '../shared';
 
-interface ILevelDetailProps extends ReduxProps {
+interface ILevelDetailProps {
     route: any;
     navigation: any;
 }
 
 const ICON_SCALING = 0.75;
 
-function LevelDetail({ route, navigation, levels, getLevel, subjects }: ILevelDetailProps) {
+function LevelDetail({ route, navigation }: ILevelDetailProps) {
     const { levelNumber } = route.params;
-    const [levelData, setLevelData] = useState<ISubject[]>([]);
+    const { data, isLoading } = useGetLevelByNumberQuery(levelNumber)
     const theme = useTheme();
 
-    useEffect(() => {
-        getLevel(levelNumber);
-    }, []);
-
-    useEffect(() => {
-        if (levels && levels[levelNumber]) {
-            const test = levels[levelNumber].map((val: number) => {
-                return subjects[val];
-            });
-            setLevelData(test);
-        }
-    }, [levels])
+    const renderSubjectButton = ({ item, index }: { item: ISubject, index: number}) => (
+        <SubjectButton key={index} item={item} navigation={navigation} />
+    );
 
     const displaySection = React.useMemo(() => (filter: string, sectionText: string) => {
         let result = <></>;
-        if (levelData) {
-            const buttons = levelData
+        if (!isLoading && data) {
+            const buttons = data.data
                 .filter((val: ISubject) => val.object === filter && !val.data.hidden_at)
                 .map((val: ISubject, index: number) => {
                     return <SubjectButton key={index} item={val} navigation={navigation} />
@@ -51,16 +43,20 @@ function LevelDetail({ route, navigation, levels, getLevel, subjects }: ILevelDe
                             <Text style={style.sectionHeaderText}>{sectionText}</Text>
                             <Text>{buttons.length} subjects</Text>
                         </View>
-                        <View style={ filter !== 'vocabulary' ? style.viewRow : {}}>
+                        <FlatList
+                            data={data.data.filter((val: ISubject) => val.object === filter && !val.data.hidden_at)}
+                            renderItem={renderSubjectButton}
+                        />
+                        {/* <View style={ filter !== 'vocabulary' ? style.viewRow : {}}>
                             {buttons}
-                        </View>
+                        </View> */}
                     </CollapsibleSection>
                 )
             }
         }
 
         return result;
-    }, [levelData])
+    }, [data, isLoading])
 
 
     return (
@@ -100,17 +96,4 @@ const style = StyleSheet.create({
     }
 });
 
-const mapStateToProps = (state: RootState) => ({
-    levels: state.levelState.levels,
-    subjects: state.subjectState.subjects
-});
-
-const mapDispatchToProps = (dispatch: any) => ({
-    getLevel: (id: number) => dispatch(RequestLevel(id))
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type ReduxProps = ConnectedProps<typeof connector>;
-
-export default connector(LevelDetail);
+export default LevelDetail;
