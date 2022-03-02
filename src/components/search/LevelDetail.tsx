@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { connect, ConnectedProps, useDispatch, useSelector } from 'react-redux';
 import { ISubject } from '../../models';
-import { RequestLevel } from '../../redux/actions';
-import { useGetLevelByNumberQuery } from '../../redux/api';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { fetchLevelByNumber } from '../../redux/reducers/levelReducer';
 import { RootState } from '../../redux/store';
 import { useTheme } from '../../util/Theme';
 import { Card, CollapsibleSection, Loading, SubjectButton } from '../shared';
@@ -18,8 +17,13 @@ const ICON_SCALING = 0.75;
 
 function LevelDetail({ route, navigation }: ILevelDetailProps) {
     const { levelNumber } = route.params;
-    const { data, isLoading } = useGetLevelByNumberQuery(levelNumber)
+    const { data, loading } = useAppSelector((state: RootState) => ({ data: state.levelState.levels[levelNumber], loading: state.levelState.loading[levelNumber] }));
+    const dispatch = useAppDispatch();
     const theme = useTheme();
+
+    useEffect(() => {
+      dispatch(fetchLevelByNumber(levelNumber));
+    }, [])
 
     const renderSubjectButton = ({ item, index }: { item: ISubject, index: number}) => (
         <SubjectButton key={index} item={item} navigation={navigation} />
@@ -27,8 +31,8 @@ function LevelDetail({ route, navigation }: ILevelDetailProps) {
 
     const displaySection = React.useMemo(() => (filter: string, sectionText: string) => {
         let result = <></>;
-        if (!isLoading && data) {
-            const buttons = data.data
+        if (!loading && data) {
+            const buttons = data
                 .filter((val: ISubject) => val.object === filter && !val.data.hidden_at)
                 .map((val: ISubject, index: number) => {
                     return <SubjectButton key={index} item={val} navigation={navigation} />
@@ -44,7 +48,7 @@ function LevelDetail({ route, navigation }: ILevelDetailProps) {
                             <Text>{buttons.length} subjects</Text>
                         </View>
                         <FlatList
-                            data={data.data.filter((val: ISubject) => val.object === filter && !val.data.hidden_at)}
+                            data={data.filter((val: ISubject) => val.object === filter && !val.data.hidden_at)}
                             renderItem={renderSubjectButton}
                         />
                         {/* <View style={ filter !== 'vocabulary' ? style.viewRow : {}}>
@@ -56,11 +60,11 @@ function LevelDetail({ route, navigation }: ILevelDetailProps) {
         }
 
         return result;
-    }, [data, isLoading])
+    }, [data, loading])
 
 
     return (
-        <Loading loading={isLoading}>
+        <Loading loading={loading}>
             <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
                 <ScrollView>
                     <Card style={style.viewRow}>

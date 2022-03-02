@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { IContextSentence, IKanjiReading, IMeaning, IPronunciation, ISubject } from '../../models'
@@ -8,14 +8,12 @@ import Icon from 'react-native-vector-icons/Fontisto';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import SoundPlayer from 'react-native-sound-player'
 import { isKatakana, toHiragana } from 'wanakana';
-import { RequestSubjects } from '../../redux/actions';
-import { RootState } from '../../redux/reducers';
-import { connect, ConnectedProps } from 'react-redux';
-import { subjectsAreGood } from '../../util/subjectHelpers';
-import { useGetSubjectByIdQuery } from '../../redux/api';
+import { RootState } from '../../redux/store';
+import { fetchSubjectById } from '../../redux/reducers/subjectReducer';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 Icon.loadFont();
 
-interface ISubjectDetailsProps extends ReduxProps {
+type ISubjectDetailsProps = {
     route: any;
     navigation: any;
 }
@@ -23,24 +21,63 @@ interface ISubjectDetailsProps extends ReduxProps {
 type AudioMap = Record<string, IPronunciation[]>;
 
 const ICON_SCALING = 0.9;
-interface ISubjectDetailsState {
+type ISubjectDetailsState = {
     subject: ISubject | undefined;
-    components: ISubject[] | undefined;
-    amalgamations: ISubject[] | undefined;
-    visuallySimilar: ISubject[] | undefined;
+    components: ISubject[];
+    amalgamations: ISubject[];
+    visuallySimilar: ISubject[];
+    loading: boolean;
 }
 
-function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDetailsProps) {
+// double loading icon might be because we add to the stack and then transition away
+// so current route intiates loading
+// open "rndebugger://set-debugger-loc?host=localhost&port=8081"
+function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
     const theme = useTheme();
     const { subjectId } = route.params;
-    const { data, isLoading } = useGetSubjectByIdQuery(subjectId);
+    const { subject, amalgamations, visuallySimilar, components, loading } = useAppSelector((state: RootState) => {
+      const result: ISubjectDetailsState = {
+        subject: undefined,
+        components: [],
+        amalgamations: [],
+        visuallySimilar: [],
+        loading: state.subjectState.loading[subjectId],
+      };
+
+      if (!result.loading && !!state.subjectState.subjects[subjectId]) {
+        result.subject = state.subjectState.subjects[subjectId];
+        result.subject.data.amalgamation_subject_ids?.forEach((val: number) => {
+          result.amalgamations.push(state.subjectState.subjects[val]);
+        });
+        result.subject.data.component_subject_ids?.forEach((val: number) => {
+          result.components.push(state.subjectState.subjects[val]);
+        })
+        result.subject.data.visually_similar_subject_ids?.forEach((val: number) => {
+          result.visuallySimilar.push(state.subjectState.subjects[val]);
+        })
+      }
+
+      return result;
+    })
+    const dispatch = useAppDispatch();
+
+    const subjectsAreGood = useMemo(() => {
+      const amalgamationsGood = subject?.data.amalgamation_subject_ids ? subject.data.amalgamation_subject_ids?.every((val: number) => !!amalgamations.find((subj: ISubject) => subj && subj.id === val)) : true;
+      const componentsGood = subject?.data.component_subject_ids ? subject.data.component_subject_ids.every((val: number) => !!components.find((subj: ISubject) => subj && subj.id === val)) : true;
+      const visuallySimGood = subject?.data.visually_similar_subject_ids ? subject.data.visually_similar_subject_ids?.every((val: number) => !!visuallySimilar.find((subj: ISubject) => subj && subj.id === val)) : true;
+      return !!subject && !!amalgamationsGood && componentsGood && visuallySimGood;
+    }, [subject, amalgamations, components, visuallySimilar])
+
+    useEffect(() => {
+      dispatch(fetchSubjectById(subjectId))
+    }, [])
 
     const renderSections = (): JSX.Element => {
         let result: JSX.Element = <></>;
 
-        if (data!.object === 'radical') {
+        if (subject!.object === 'radical') {
             result = renderRadical();
-        } else if (data!.object === 'kanji') {
+        } else if (subject!.object === 'kanji') {
             result = renderKanji();
         } else {
             result = renderVocab();
@@ -63,15 +100,15 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Name')}
                     <View>
-                        <StyledText>Primary: {data?.data.meanings[0].meaning}</StyledText>
-                        <StyledText>Meaning: </StyledText><Markup>{data!.data.meaning_mnemonic}</Markup>
+                        <StyledText>Primary: {subject!.data.meanings[0].meaning}</StyledText>
+                        <StyledText>Meaning: </StyledText><Markup>{subject!.data.meaning_mnemonic}</Markup>
                     </View>
                 </CollapsibleSection>
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Found in Kanji')}
                     <View style={theme.viewRow}>
                         {
-                            data!.amalgamations!.map((val: ISubject, index: number) => {
+                            amalgamations.map((val: ISubject, index: number) => {
                                 return <SubjectButton key={index} item={val} navigation={navigation} push={true} />
                             })
                         }
@@ -82,7 +119,7 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
     }
 
     const readingConjoiner = (type: string) => {
-        return data!.data.readings!
+        return subject!.data.readings!
             .filter((val: IKanjiReading) => val.type === type)
             .reduce((prevValue: string, currVal: IKanjiReading, idx: number) => {
                 return idx === 0 ? currVal.reading : prevValue + ', ' + currVal.reading;
@@ -90,7 +127,7 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
     }
 
     const meaningConjoiner = () => {
-        return data!.data.meanings!
+        return subject!.data.meanings!
             .filter((val: IMeaning) => !val.primary)
             .reduce((prevValue: string, currVal: IMeaning, idx: number) => {
                 return idx === 0 ? currVal.meaning : prevValue + ', ' + currVal.meaning;
@@ -98,19 +135,19 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
     }
 
     const renderKanji = () => {
-        const radicalComponents = subjectState!.components!.map((val: ISubject, index: number) => {
+        const radicalComponents = components!.map((val: ISubject, index: number) => {
             return <SubjectButton key={index} item={val} navigation={navigation} push={true} />
         });
 
-        const visuallySimilar = subjectState!.visuallySimilar!.map((val: ISubject, index: number) => {
+        const visSim = visuallySimilar!.map((val: ISubject, index: number) => {
             return <SubjectButton key={index} item={val} navigation={navigation} push={true} />
         });
 
-        const foundInVocab = subjectState!.amalgamations!.map((val: ISubject, index: number) => {
+        const foundInVocab = amalgamations!.map((val: ISubject, index: number) => {
             return <SubjectButton key={index} item={val} navigation={navigation} push={true} />
         });
 
-        const primaryMeaning = subjectState!.subject!.data.meanings.filter((val: IMeaning) => val.primary === true)[0].meaning;
+        const primaryMeaning = subject!.data.meanings.filter((val: IMeaning) => val.primary === true)[0].meaning;
 
         return (
             <>
@@ -124,7 +161,7 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
                     {renderHeaderText('Meaning')}
                     <View>
                         <StyledText>Primary: {primaryMeaning}</StyledText>
-                        <StyledText>Meaning: </StyledText><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
+                        <StyledText>Meaning: </StyledText><Markup>{subject!.data.meaning_mnemonic}</Markup>
                     </View>
                 </CollapsibleSection>
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
@@ -151,16 +188,16 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
                             </View>
                         </View>
                         <View>
-                            <StyledText>Mnemonic: </StyledText><Markup>{subjectState!.subject!.data.reading_mnemonic!}</Markup>    
+                            <StyledText>Mnemonic: </StyledText><Markup>{subject!.data.reading_mnemonic!}</Markup>    
                         </View>
                     </View>
                 </CollapsibleSection>
                 {
-                    subjectState!.visuallySimilar!.length > 0 &&
+                    visSim!.length > 0 &&
                     <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                         {renderHeaderText('Visual Similar Kanji')}
                         <View style={theme.viewRow}>
-                            {visuallySimilar}
+                            {visSim}
                         </View>
                     </CollapsibleSection>
                 }
@@ -176,7 +213,7 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
 
     const renderVocab = () => {
         const alternativeMeanings = meaningConjoiner();
-        const audioObjectsMap: AudioMap = subjectState!.subject!.data.pronunciation_audios!
+        const audioObjectsMap: AudioMap = subject!.data.pronunciation_audios!
             .filter((val: IPronunciation) => val.content_type === 'audio/mpeg')
             .reduce((prev: AudioMap, curVal: IPronunciation, index: number) => (
                 {
@@ -185,7 +222,7 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
                 }
             ), {});
 
-        const readingViews = subjectState!.subject!.data.readings!.map((val: IKanjiReading, idx: number) => {
+        const readingViews = subject!.data.readings!.map((val: IKanjiReading, idx: number) => {
             const audioObjects = audioObjectsMap[toHiragana(val.reading)];
             return (
                 <View key={idx} style={styles.readingViewRow}>
@@ -201,14 +238,14 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
             );
         });
 
-        const contextSentences = subjectState!.subject!.data.context_sentences!.map((val: IContextSentence, idx: number) => (
+        const contextSentences = subject!.data.context_sentences!.map((val: IContextSentence, idx: number) => (
             <View key={idx} style={styles.rowView}>
                 <StyledText>{val.ja}</StyledText>
                 <StyledText style={styles.normalText}>{val.en}</StyledText>
             </View>
         ));
 
-        const kanjiComposition = subjectState!.components!.map((val: ISubject, idx: number) => (
+        const kanjiComposition = components!.map((val: ISubject, idx: number) => (
             <SubjectButton key={idx} item={val} navigation={navigation} push={true} />
         ));
 
@@ -217,18 +254,18 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Meaning')}
                     <View>
-                        <StyledText>Primary: {subjectState!.subject!.data.meanings[0].meaning}</StyledText>
+                        <StyledText>Primary: {subject!.data.meanings[0].meaning}</StyledText>
                         {
                             alternativeMeanings !== '' && <StyledText>Alternative: {alternativeMeanings}</StyledText>
                         }
-                        <StyledText>Explanation: </StyledText><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
+                        <StyledText>Explanation: </StyledText><Markup>{subject!.data.meaning_mnemonic}</Markup>
                     </View>
                 </CollapsibleSection>
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Readings')}
                     <View>
                         {readingViews}
-                        <Markup>{subjectState!.subject!.data.reading_mnemonic!}</Markup>
+                        <Markup>{subject!.data.reading_mnemonic!}</Markup>
                     </View>
                 </CollapsibleSection>
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
@@ -252,19 +289,21 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
     }
 
     return (
-        <Loading loading={isLoading}>
+        <Loading loading={loading}>
             <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
                 <ScrollView>
                     {
-                        (data) &&
+                      subjectsAreGood && (
                         <>
                             <View style={[theme.viewRow, styles.subjectHeader]}>
                                 <View>
-                                    <Subject item={data} displayExtraData={false} />
+                                    <Subject item={subject!} displayExtraData={false} />
                                 </View>
                             </View>
                             {renderSections()}
-                        </>
+                        </>   
+                      )
+                        
                     }
                 </ScrollView>
             </SafeAreaView>
@@ -291,17 +330,4 @@ const styles = StyleSheet.create({
     }
 });
 
-
-const mapStateToProps = (state: RootState) => ({
-    subjects: state.subjectState.subjects
-});
-
-const mapDispatchToProps = (dispatch: any) => ({
-    getSubject: (id: number) => dispatch(RequestSubjects(id))
-});
-
-const connector = connect(mapStateToProps, mapDispatchToProps);
-
-type ReduxProps = ConnectedProps<typeof connector>;
-
-export default connector(SubjectDetails);
+export default SubjectDetails;
