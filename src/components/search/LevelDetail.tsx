@@ -60,7 +60,7 @@ function LevelDetail({ route, navigation }: ILevelDetailProps) {
 
 
     return (
-        <Loading>
+        <Loading loading={isLoading}>
             <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
                 <ScrollView>
                     <Card style={style.viewRow}>

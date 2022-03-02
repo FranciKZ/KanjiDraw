@@ -12,6 +12,7 @@ import { RequestSubjects } from '../../redux/actions';
 import { RootState } from '../../redux/reducers';
 import { connect, ConnectedProps } from 'react-redux';
 import { subjectsAreGood } from '../../util/subjectHelpers';
+import { useGetSubjectByIdQuery } from '../../redux/api';
 Icon.loadFont();
 
 interface ISubjectDetailsProps extends ReduxProps {
@@ -32,28 +33,14 @@ interface ISubjectDetailsState {
 function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDetailsProps) {
     const theme = useTheme();
     const { subjectId } = route.params;
-    const [subjectState, setSubjectState] = useState<ISubjectDetailsState>();
-    
-    useEffect(() => {
-        getSubject(subjectId);
-    }, [])
-
-    useEffect(() => {
-        if (subjectsAreGood(subjects, subjectId)) {
-            const subject = subjects[subjectId];
-            const components = subject.data.component_subject_ids?.map((val: number) => subjects[val]);
-            const amalgamations = subject.data.amalgamation_subject_ids?.map((val: number) => subjects[val]);
-            const visuallySimilar = subject.data.visually_similar_subject_ids?.map((val: number) => subjects[val]);
-            setSubjectState({ subject, components, amalgamations, visuallySimilar });
-        }
-    }, [subjects])
+    const { data, isLoading } = useGetSubjectByIdQuery(subjectId);
 
     const renderSections = (): JSX.Element => {
         let result: JSX.Element = <></>;
 
-        if (subjectState!.subject!.object === 'radical') {
+        if (data!.object === 'radical') {
             result = renderRadical();
-        } else if (subjectState!.subject!.object === 'kanji') {
+        } else if (data!.object === 'kanji') {
             result = renderKanji();
         } else {
             result = renderVocab();
@@ -76,15 +63,15 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Name')}
                     <View>
-                        <StyledText>Primary: {subjectState!.subject!.data.meanings[0].meaning}</StyledText>
-                        <StyledText>Meaning: </StyledText><Markup>{subjectState!.subject!.data.meaning_mnemonic}</Markup>
+                        <StyledText>Primary: {data?.data.meanings[0].meaning}</StyledText>
+                        <StyledText>Meaning: </StyledText><Markup>{data!.data.meaning_mnemonic}</Markup>
                     </View>
                 </CollapsibleSection>
                 <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
                     {renderHeaderText('Found in Kanji')}
                     <View style={theme.viewRow}>
                         {
-                            subjectState!.amalgamations!.map((val: ISubject, index: number) => {
+                            data!.amalgamations!.map((val: ISubject, index: number) => {
                                 return <SubjectButton key={index} item={val} navigation={navigation} push={true} />
                             })
                         }
@@ -95,7 +82,7 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
     }
 
     const readingConjoiner = (type: string) => {
-        return subjectState!.subject!.data.readings!
+        return data!.data.readings!
             .filter((val: IKanjiReading) => val.type === type)
             .reduce((prevValue: string, currVal: IKanjiReading, idx: number) => {
                 return idx === 0 ? currVal.reading : prevValue + ', ' + currVal.reading;
@@ -103,7 +90,7 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
     }
 
     const meaningConjoiner = () => {
-        return subjectState!.subject!.data.meanings!
+        return data!.data.meanings!
             .filter((val: IMeaning) => !val.primary)
             .reduce((prevValue: string, currVal: IMeaning, idx: number) => {
                 return idx === 0 ? currVal.meaning : prevValue + ', ' + currVal.meaning;
@@ -265,15 +252,15 @@ function SubjectDetails({ route, navigation, subjects, getSubject }: ISubjectDet
     }
 
     return (
-        <Loading>
+        <Loading loading={isLoading}>
             <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
                 <ScrollView>
                     {
-                        (subjectState && subjectState.subject) &&
+                        (data) &&
                         <>
                             <View style={[theme.viewRow, styles.subjectHeader]}>
                                 <View>
-                                    <Subject item={subjectState.subject} displayExtraData={false} />
+                                    <Subject item={data} displayExtraData={false} />
                                 </View>
                             </View>
                             {renderSections()}

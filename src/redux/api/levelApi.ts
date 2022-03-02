@@ -37,6 +37,7 @@ export const api = createApi({
       query: (subjectId) => `subjects/${subjectId}`,
       async onQueryStarted(id, { dispatch, queryFulfilled}) {
         const { data } = await queryFulfilled;
+        console.log(data);
         const additionalSubjectIds: number[] = [];
         if (data.object !== 'vocabulary') {
           additionalSubjectIds.concat(data.data.amalgamation_subject_ids!);

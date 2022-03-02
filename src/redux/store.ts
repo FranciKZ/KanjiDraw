@@ -1,5 +1,4 @@
 import createSagaMiddleware from 'redux-saga';
-import { composeWithDevTools } from 'redux-devtools-extension'
 import { configureStore } from '@reduxjs/toolkit';
 import levelReducer from './reducers/levelReducer';
 import subjectReducer from './reducers/subjectReducer';
@@ -13,7 +12,7 @@ const store = configureStore({
     subjectState: subjectReducer,
     [api.reducerPath]: api.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware)
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(api.middleware),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

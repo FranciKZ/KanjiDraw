@@ -1,7 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
-import { RootState } from '../../redux/reducers';
 
 const Loading = ({ loading, children }: { loading : boolean, children: any}) => {
     return (
@@ -21,8 +20,4 @@ const styles = StyleSheet.create({
     }
 });
 
-const mapLoadingStateToProps = (state: RootState) => ({
-    loading: state.sagaState.loading
-});
-
-export default connect(mapLoadingStateToProps)(Loading);
+export default Loading;
