@@ -1,22 +1,35 @@
-import { IAction } from '../../models/IAction';
-import { LevelActions } from '../actions';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { IBulkResponse, ISubject } from '../../models';
+import getLevel from '../api/levelApi';
 
-interface ILevelState {
-    levels: Record<string, number[]>;
+export const fetchLevelByNumber = createAsyncThunk<IBulkResponse<ISubject>, number>(
+  'levels/fetchLevelByNumber',
+  async (levelNumber) => await getLevel(levelNumber),
+);
+
+type ILevelState = {
+  levels: Record<string, ISubject[]>;
+  loading: Record<string, boolean>;
 };
 
 const initialState: ILevelState = {
-    levels: {}
-}
+  levels: {},
+  loading: {},
+};
 
-export default(state = initialState, { type, payload }: IAction) => {
-    switch(type) {
-        case LevelActions.SET_LEVEL:
-            const newLevels = { ...state.levels };
-            newLevels[payload.levelNumber] = payload.data;
+export const levelSlice = createSlice({
+  name: 'levels',
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchLevelByNumber.pending, (state, action) => {
+      state.loading[action.meta.arg] = true;
+    });
+    builder.addCase(fetchLevelByNumber.fulfilled, (state, action) => {
+      state.levels[action.meta.arg] = action.payload.data;
+      state.loading[action.meta.arg] = false;
+    });
+  },
+});
 
-            return { ...state, levels: newLevels };
-        default: 
-            return state;
-    }
-}
+export default levelSlice.reducer;

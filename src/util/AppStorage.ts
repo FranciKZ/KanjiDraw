@@ -1,29 +1,30 @@
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export class AppStorage {
-    static async getSecureItem(key: string): Promise<string> {
-        let item = await SecureStore.getItemAsync(key);
-        
-        if (item) {
-            return item;
-        } else {
-            return '';
-        }
-    }
+class AppStorage {
+  static async getSecureItem(key: string): Promise<string> {
+    const item = await SecureStore.getItemAsync(key);
 
-    static async setSecureItem(key: string, data: any): Promise<void> {
-        const store = typeof data !== 'string' ? JSON.stringify(data) : data;
-        await SecureStore.setItemAsync(key, store);
+    if (item) {
+      return item;
     }
+    return '';
+  }
 
-    static async getItem(key: string): Promise<string | null> {
-        return await AsyncStorage.getItem(key);
-    }
+  static async setSecureItem(key: string, data: any): Promise<void> {
+    const store = typeof data !== 'string' ? JSON.stringify(data) : data;
+    await SecureStore.setItemAsync(key, store);
+  }
 
-    static async setItem(key: string, data: any): Promise<void> {
-        const store = typeof data !== 'string' ? JSON.stringify(data) : data;
+  static async getItem(key: string): Promise<string | null> {
+    return await AsyncStorage.getItem(key);
+  }
 
-        await AsyncStorage.setItem(key, store);
-    }
+  static async setItem(key: string, data: any): Promise<void> {
+    const store = typeof data !== 'string' ? JSON.stringify(data) : data;
+
+    await AsyncStorage.setItem(key, store);
+  }
 }
+
+export default AppStorage;
