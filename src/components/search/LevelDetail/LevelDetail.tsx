@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import {
-  FlatList, ScrollView, Text, View,
+  FlatList, Text, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ISubject } from '../../../models';
@@ -11,16 +11,28 @@ import { useTheme } from '../../../util/Theme';
 import {
   Card, CollapsibleSection, Loading, SubjectButton,
 } from '../../shared';
+import LevelDetailSection from './LevelDetailSection';
 import style from './style';
 
-interface ILevelDetailProps {
+type LevelDetailProps = {
   route: any;
   navigation: any;
-}
+};
 
-const ICON_SCALING = 0.75;
+type Section = {
+  filter: string;
+  displayText: string;
+  id: string;
+};
 
-function LevelDetail({ route, navigation }: ILevelDetailProps) {
+const sectionsList: Section[] = [
+  { filter: 'title', displayText: 'title', id: 'title_section' },
+  { filter: 'radical', displayText: 'Radicals', id: 'radical_section' },
+  { filter: 'kanji', displayText: 'Kanji', id: 'kanji_section' },
+  { filter: 'vocabulary', displayText: 'Vocabulary', id: 'vocab_section' },
+];
+
+function LevelDetail({ route, navigation }: LevelDetailProps) {
   const { levelNumber } = route.params;
   const { data, loading } = useAppSelector((state: RootState) => (
     { data: state.levelState.levels[levelNumber], loading: state.levelState.loading[levelNumber] }
@@ -32,43 +44,28 @@ function LevelDetail({ route, navigation }: ILevelDetailProps) {
     dispatch(fetchLevelByNumber(levelNumber));
   }, [dispatch, levelNumber]);
 
-  const renderSubjectButton = ({ item, index }: { item: ISubject, index: number }) => (
-    <SubjectButton key={index} item={item} navigation={navigation} />
-  );
-
-  const displaySection = (filter: string, sectionText: string) => {
-    let result;
+  const renderSection = (
+    { item }: { item: Section },
+  ) => {
+    let result = null;
     if (!loading && data) {
-      const buttons = data
-        .filter((val: ISubject) => val.object === filter && !val.data.hidden_at)
-        .map((val: ISubject) => (
-          <SubjectButton key={`${val.id}`} item={val} navigation={navigation} />
-        ));
+      if (item.filter === 'title') {
+        <Card style={style.viewRow}>
+          <Text style={{ ...theme.primaryText, fontSize: 30 }}>
+            {`Level: ${levelNumber}`}
+          </Text>
+        </Card>;
+      } else {
+        const items = data
+          .filter((val: ISubject) => val.object === item.filter && !val.data.hidden_at);
 
-      if (buttons.length) {
         result = (
-          <CollapsibleSection
-            iconSize={style.sectionHeaderText.fontSize * ICON_SCALING}
-          >
-            <View style={{
-              display: 'flex', flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-            }}
-            >
-              <Text style={style.sectionHeaderText}>{sectionText}</Text>
-              <Text>
-                {buttons.length}
-                {' '}
-                subjects
-              </Text>
-            </View>
-            <FlatList
-              data={data.filter((val: ISubject) => val.object === filter && !val.data.hidden_at)}
-              renderItem={renderSubjectButton}
-            />
-            {/* <View style={ filter !== 'vocabulary' ? style.viewRow : {}}>
-                            {buttons}
-                        </View> */}
-          </CollapsibleSection>
+          <LevelDetailSection
+            numColumns={item.filter === 'vocabulary' ? 1 : 4}
+            items={items}
+            navigation={navigation}
+            sectionText={item.displayText}
+          />
         );
       }
     }
@@ -79,24 +76,11 @@ function LevelDetail({ route, navigation }: ILevelDetailProps) {
   return (
     <Loading loading={loading}>
       <SafeAreaView edges={['right', 'left', 'top']} style={{ marginRight: 5, marginLeft: 5 }}>
-        <ScrollView>
-          <Card style={style.viewRow}>
-            <Text style={{ ...theme.primaryText, fontSize: 30 }}>
-              Level:
-              {' '}
-              {levelNumber}
-            </Text>
-          </Card>
-          {
-                        displaySection('radical', 'Radicals')
-                    }
-          {
-                        displaySection('kanji', 'Kanji')
-                    }
-          {
-                        displaySection('vocabulary', 'Vocabulary')
-                    }
-        </ScrollView>
+        <FlatList
+          data={sectionsList}
+          renderItem={renderSection}
+          keyExtractor={(item: Section) => `${item.id}_${levelNumber}`}
+        />
       </SafeAreaView>
     </Loading>
   );
