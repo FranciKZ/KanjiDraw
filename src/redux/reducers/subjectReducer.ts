@@ -1,16 +1,11 @@
-
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ISubject, ISubjectWithRelations } from '../../models';
-import { IAction } from '../../models/IAction';
-import { SubjectActions } from '../actions';
 import { getAllSubjectData } from '../api';
 
 export const fetchSubjectById = createAsyncThunk<ISubjectWithRelations, number>(
   'subjects/fetchSubjectById',
-  async (subjectId) => {
-    return await getAllSubjectData(subjectId);
-  }
-)
+  async (subjectId) => await getAllSubjectData(subjectId),
+);
 
 type ISubjectState = {
   subjects: Record<string, ISubject>;
@@ -20,7 +15,7 @@ type ISubjectState = {
 const initialState: ISubjectState = {
   subjects: {},
   loading: {},
-}
+};
 
 const subjectSlicer = createSlice({
   name: 'subject',
@@ -29,7 +24,7 @@ const subjectSlicer = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchSubjectById.pending, (state, actions) => {
       state.loading[actions.meta.arg] = true;
-    }),
+    });
     builder.addCase(fetchSubjectById.fulfilled, (state, actions) => {
       const result: Record<string, ISubject> = {};
       result[actions.payload.subject.id] = actions.payload.subject;
@@ -44,8 +39,8 @@ const subjectSlicer = createSlice({
       });
       state.subjects = { ...state.subjects, ...result };
       state.loading[actions.payload.subject.id] = false;
-    })
-  }
-})
+    });
+  },
+});
 
 export default subjectSlicer.reducer;

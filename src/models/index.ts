@@ -7,4 +7,3 @@ export * from './IStudyMaterials';
 export * from './ISubject';
 export * from './IUser';
 export * from './ISummary';
-export * from './ICachedData';

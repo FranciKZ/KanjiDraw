@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
-  FlatList, ScrollView, StyleSheet, Text, View,
+  FlatList, ScrollView, Text, View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ISubject } from '../../models';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { fetchLevelByNumber } from '../../redux/reducers/levelReducer';
-import { RootState } from '../../redux/store';
-import { useTheme } from '../../util/Theme';
+import { ISubject } from '../../../models';
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks';
+import { fetchLevelByNumber } from '../../../redux/reducers/levelReducer';
+import { RootState } from '../../../redux/store';
+import { useTheme } from '../../../util/Theme';
 import {
   Card, CollapsibleSection, Loading, SubjectButton,
-} from '../shared';
+} from '../../shared';
+import style from './style';
 
 interface ILevelDetailProps {
   route: any;
@@ -21,24 +22,28 @@ const ICON_SCALING = 0.75;
 
 function LevelDetail({ route, navigation }: ILevelDetailProps) {
   const { levelNumber } = route.params;
-  const { data, loading } = useAppSelector((state: RootState) => ({ data: state.levelState.levels[levelNumber], loading: state.levelState.loading[levelNumber] }));
+  const { data, loading } = useAppSelector((state: RootState) => (
+    { data: state.levelState.levels[levelNumber], loading: state.levelState.loading[levelNumber] }
+  ));
   const dispatch = useAppDispatch();
   const theme = useTheme();
 
   useEffect(() => {
     dispatch(fetchLevelByNumber(levelNumber));
-  }, []);
+  }, [dispatch, levelNumber]);
 
   const renderSubjectButton = ({ item, index }: { item: ISubject, index: number }) => (
     <SubjectButton key={index} item={item} navigation={navigation} />
   );
 
-  const displaySection = React.useMemo(() => function (filter: string, sectionText: string) {
-    let result = <></>;
+  const displaySection = (filter: string, sectionText: string) => {
+    let result;
     if (!loading && data) {
       const buttons = data
         .filter((val: ISubject) => val.object === filter && !val.data.hidden_at)
-        .map((val: ISubject, index: number) => <SubjectButton key={index} item={val} navigation={navigation} />);
+        .map((val: ISubject) => (
+          <SubjectButton key={`${val.id}`} item={val} navigation={navigation} />
+        ));
 
       if (buttons.length) {
         result = (
@@ -69,7 +74,7 @@ function LevelDetail({ route, navigation }: ILevelDetailProps) {
     }
 
     return result;
-  }, [data, loading]);
+  };
 
   return (
     <Loading loading={loading}>
@@ -96,20 +101,5 @@ function LevelDetail({ route, navigation }: ILevelDetailProps) {
     </Loading>
   );
 }
-
-const style = StyleSheet.create({
-  sectionHeader: {
-    flex: 1,
-  },
-  sectionHeaderText: {
-    fontSize: 25,
-  },
-  viewRow: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-  },
-});
 
 export default LevelDetail;

@@ -1,2 +1,3 @@
 export * from './subjectApi';
-export * from './levelApi';
+export { default as levelApi } from './levelApi';
+export { default as summaryApi } from './summaryApi';
