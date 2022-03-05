@@ -1,4 +1,3 @@
-import { Moment } from "moment";
 import { IBase } from "./IBase";
 
 export interface ISubjectWithRelations {

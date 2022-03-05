@@ -1,10 +1,12 @@
-import React from 'react'
-import { SafeAreaView, Text } from 'react-native'
+import React from 'react';
+import { SafeAreaView, Text } from 'react-native';
 
-export const Profile: React.FC = (props) => {
-    return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <Text>Profile Text</Text>
-        </SafeAreaView>
-    )
+function Profile(props: any) {
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <Text>Profile Text</Text>
+    </SafeAreaView>
+  );
 }
+
+export default Profile;
