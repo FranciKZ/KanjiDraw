@@ -7,7 +7,6 @@ import style from './levelDetailSectionStyle';
 type LevelDetailSectionProps = {
   items: ISubject[];
   numColumns: number;
-  navigation: any;
   sectionText: string;
 };
 
@@ -15,11 +14,11 @@ const ICON_SCALING = 0.75;
 
 function LevelDetailSection(
   {
-    items, numColumns, navigation, sectionText,
+    items, numColumns, sectionText,
   }: LevelDetailSectionProps,
 ) {
   const renderSubjectButton = ({ item, index }: { item: ISubject, index: number }) => (
-    <SubjectButton key={index} item={item} navigation={navigation} />
+    <SubjectButton key={index} item={item} />
   );
 
   return (

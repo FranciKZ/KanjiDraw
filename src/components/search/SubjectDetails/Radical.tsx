@@ -10,12 +10,11 @@ import styles from './style';
 type RadicalProps = {
   subject: ISubject;
   amalgamations: ISubject[];
-  navigation: any;
 };
 
 const ICON_SCALING = 0.9;
 
-function Radical({ subject, amalgamations, navigation }: RadicalProps) {
+function Radical({ subject, amalgamations }: RadicalProps) {
   const theme = useTheme();
   const renderHeaderText = (text: string) => <Text style={styles.headingText}>{text}</Text>;
 
@@ -37,7 +36,7 @@ function Radical({ subject, amalgamations, navigation }: RadicalProps) {
         <View style={theme.viewRow}>
           {
             amalgamations.map((val: ISubject) => (
-              <SubjectButton key={`${val.id}`} item={val} navigation={navigation} push />
+              <SubjectButton key={`${val.id}`} item={val} push />
             ))
           }
         </View>

@@ -19,7 +19,6 @@ Icon.loadFont();
 
 type ISubjectDetailsProps = {
   route: any;
-  navigation: any;
 };
 
 type ISubjectDetailsState = {
@@ -33,7 +32,7 @@ type ISubjectDetailsState = {
 // double loading icon might be because we add to the stack and then transition away
 // so current route intiates loading
 // open "rndebugger://set-debugger-loc?host=localhost&port=8081"
-function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
+function SubjectDetails({ route }: ISubjectDetailsProps) {
   const theme = useTheme();
   const { subjectId } = route.params;
   const {
@@ -88,7 +87,6 @@ function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
     <Radical
       subject={subject!}
       amalgamations={amalgamations}
-      navigation={navigation}
     />
   );
 
@@ -98,7 +96,6 @@ function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
       amalgamations={amalgamations}
       components={components}
       visuallySimilar={visuallySimilar}
-      navigation={navigation}
     />
   );
 
@@ -106,7 +103,6 @@ function SubjectDetails({ route, navigation }: ISubjectDetailsProps) {
     <Vocab
       subject={subject!}
       components={components}
-      navigation={navigation}
     />
   );
 

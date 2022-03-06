@@ -16,14 +16,13 @@ Icon.loadFont();
 type VocabProps = {
   subject: ISubject;
   components: ISubject[];
-  navigation: any;
 };
 
 type AudioMap = Record<string, IPronunciation[]>;
 
 const ICON_SCALING = 0.9;
 
-function Vocab({ subject, components, navigation }: VocabProps) {
+function Vocab({ subject, components }: VocabProps) {
   const theme = useTheme();
   const generateAltMeanings = useMemo(() => subject!.data.meanings!
     .filter((val: IMeaning) => !val.primary)
@@ -46,7 +45,7 @@ function Vocab({ subject, components, navigation }: VocabProps) {
   ));
 
   const generateKanjiComposition = () => components!.map((val: ISubject) => (
-    <SubjectButton key={`${val.id}`} item={val} navigation={navigation} push />
+    <SubjectButton key={`${val.id}`} item={val} push />
   ));
 
   const generateReadingSection = useMemo(() => {

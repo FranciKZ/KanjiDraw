@@ -12,7 +12,6 @@ type KanjiProps = {
   components: ISubject[];
   visuallySimilar: ISubject[];
   amalgamations: ISubject[];
-  navigation: any;
 };
 
 const ICON_SCALING = 0.9;
@@ -22,7 +21,6 @@ function Kanji({
   components,
   visuallySimilar,
   amalgamations,
-  navigation,
 }: KanjiProps) {
   const theme = useTheme();
   const renderHeaderText = (text: string) => <Text style={styles.headingText}>{text}</Text>;
@@ -31,7 +29,7 @@ function Kanji({
     .reduce((prevValue: string, currVal: IKanjiReading, idx: number) => (idx === 0 ? currVal.reading : `${prevValue}, ${currVal.reading}`), '');
 
   const renderButtons = (subjects: ISubject[]) => subjects.map((val: ISubject) => (
-    <SubjectButton key={`${val.id}}`} item={val} navigation={navigation} push />
+    <SubjectButton key={`${val.id}}`} item={val} push />
   ));
 
   const primaryMeaning = subject.data.meanings

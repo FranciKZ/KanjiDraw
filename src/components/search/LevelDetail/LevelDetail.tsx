@@ -16,7 +16,6 @@ import style from './style';
 
 type LevelDetailProps = {
   route: any;
-  navigation: any;
 };
 
 type Section = {
@@ -32,7 +31,7 @@ const sectionsList: Section[] = [
   { filter: 'vocabulary', displayText: 'Vocabulary', id: 'vocab_section' },
 ];
 
-function LevelDetail({ route, navigation }: LevelDetailProps) {
+function LevelDetail({ route }: LevelDetailProps) {
   const { levelNumber } = route.params;
   const { data, loading } = useAppSelector((state: RootState) => (
     { data: state.levelState.levels[levelNumber], loading: state.levelState.loading[levelNumber] }
@@ -63,7 +62,6 @@ function LevelDetail({ route, navigation }: LevelDetailProps) {
           <LevelDetailSection
             numColumns={item.filter === 'vocabulary' ? 1 : 4}
             items={items}
-            navigation={navigation}
             sectionText={item.displayText}
           />
         );
