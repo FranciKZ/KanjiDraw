@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 import levelReducer from './reducers/levelReducer';
+import statisticsReducer from './reducers/statisticsReducer';
 import subjectReducer from './reducers/subjectReducer';
 import summaryReducer from './reducers/summaryReducer';
 
@@ -8,6 +9,7 @@ const store = configureStore({
     levelState: levelReducer,
     subjectState: subjectReducer,
     summaryState: summaryReducer,
+    statisticsState: statisticsReducer,
   },
 });
 

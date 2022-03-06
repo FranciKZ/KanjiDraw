@@ -14,6 +14,7 @@ import styles from './style';
 import Kanji from './Kanji ';
 import Radical from './Radical';
 import Vocab from './Vocab';
+import Statistics from './Statistics';
 
 Icon.loadFont();
 
@@ -132,10 +133,11 @@ function SubjectDetails({ route }: ISubjectDetailsProps) {
                     <Subject item={subject!} displayExtraData={false} />
                   </View>
                 </View>
-                  {renderSections()}
+                {renderSections()}
               </>
             )
           }
+          <Statistics subjectId={subjectId} />
         </ScrollView>
       </SafeAreaView>
     </Loading>
