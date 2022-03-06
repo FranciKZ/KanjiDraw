@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import {
-  FlatList, Text, View,
+  FlatList, Text,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ISubject } from '../../../models';
@@ -9,7 +9,7 @@ import { fetchLevelByNumber } from '../../../redux/reducers/levelReducer';
 import { RootState } from '../../../redux/store';
 import { useTheme } from '../../../util/Theme';
 import {
-  Card, CollapsibleSection, Loading, SubjectButton,
+  Card, Loading,
 } from '../../shared';
 import LevelDetailSection from './LevelDetailSection';
 import style from './style';

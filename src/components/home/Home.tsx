@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   RefreshControl, SafeAreaView, Text, View,
 } from 'react-native';
@@ -14,13 +14,9 @@ function Home() {
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  const fetchSummary = useCallback(() => async () => {
+  useEffect(() => {
     dispatch(fetchUserSummary());
   }, [dispatch]);
-
-  useEffect(() => {
-    fetchSummary();
-  }, [fetchSummary]);
 
   const calculateReviews = () => {
     let total = 0;
@@ -35,7 +31,9 @@ function Home() {
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView
         contentContainerStyle={styles.mainView}
-        refreshControl={<RefreshControl refreshing={loading} />}
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={() => dispatch(fetchUserSummary())} />
+        }
       >
         <TouchableOpacity
           style={{
