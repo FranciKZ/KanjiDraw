@@ -16,7 +16,7 @@ Icon.loadFont();
 
 const Tab = createBottomTabNavigator();
 
-const memoizedTabBarButton = (props: any) => <TouchableHighlight {...props} underlayColor="#DDDDDD" />;
+const memoizedTabBarButton = (props: object) => <TouchableHighlight {...props} underlayColor="#DDDDDD" />;
 
 const memoizedIcon = (
   { color, route }: { color: string, route: RouteProp<ParamListBase, string> },

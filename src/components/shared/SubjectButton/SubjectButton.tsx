@@ -1,3 +1,4 @@
+import { StackActions, TabActions, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { ISubject } from '../../../models';
@@ -5,22 +6,24 @@ import Subject from '../Subject/Subject';
 
 type IItemProps = {
   item: ISubject;
-  navigation: any;
   displayExtraData?: boolean;
   push?: boolean;
 };
 
 function SubjectButton({
-  item, navigation, push = false, displayExtraData = true,
+  item, push = false, displayExtraData = true,
 }: IItemProps) {
+  const navigation = useNavigation();
   const navigate = () => {
     if (push) {
-      navigation.push('SubjectDetails', { subjectId: item.id });
+      const pushAction = StackActions.push('SubjectDetails', { subjectId: item.id });
+      navigation.dispatch(pushAction);
     } else {
-      navigation.navigate('SearchStackScreen', {
+      const navigateAction = TabActions.jumpTo('SearchStackScreen', {
         screen: 'SubjectDetails',
         params: { subjectId: item.id },
       });
+      navigation.dispatch(navigateAction);
     }
   };
 
