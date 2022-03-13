@@ -49,18 +49,20 @@ function LevelDetail({ route }: LevelDetailProps) {
     let result = null;
     if (!loading && data) {
       if (item.filter === 'title') {
-        <Card style={style.viewRow}>
-          <Text style={{ ...theme.primaryText, fontSize: 30 }}>
-            {`Level: ${levelNumber}`}
-          </Text>
-        </Card>;
+        result = (
+          <Card style={style.viewRow}>
+            <Text style={{ ...theme.primaryText, fontSize: 30 }}>
+              {`Level: ${levelNumber}`}
+            </Text>
+          </Card>
+        );
       } else {
         const items = data
           .filter((val: ISubject) => val.object === item.filter && !val.data.hidden_at);
 
         result = (
           <LevelDetailSection
-            numColumns={item.filter === 'vocabulary' ? 1 : 4}
+            numColumns={item.filter === 'vocabulary' ? 1 : 3}
             items={items}
             sectionText={item.displayText}
           />

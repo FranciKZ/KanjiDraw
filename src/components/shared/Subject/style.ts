@@ -16,6 +16,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
   },
+  alignTextElementsRight: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+    alignContent: 'flex-end',
+  },
   notVocab: {
     minHeight: 80,
     justifyContent: 'center',

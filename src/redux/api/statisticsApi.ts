@@ -8,7 +8,6 @@ const getStatisticsForSubject = async (subjectId: number): Promise<IBulkResponse
   } catch (e) {
     Promise.reject(new Error('Error fetching statistics for subject'));
   }
-  console.log({ result });
   return result;
 };
 

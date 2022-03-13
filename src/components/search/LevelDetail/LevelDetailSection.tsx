@@ -35,6 +35,10 @@ function LevelDetailSection(
         </Text>
       </View>
       <FlatList
+        columnWrapperStyle={numColumns > 1 && {
+          flex: 1,
+          justifyContent: 'center',
+        }}
         data={items}
         renderItem={renderSubjectButton}
         numColumns={numColumns}

@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
-import { Text } from 'react-native';
+import { Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
+import { IStatisticData } from '../../../models';
 import { useAppDispatch } from '../../../redux/hooks';
 import { fetchStatisticsBySubjectId } from '../../../redux/reducers/statisticsReducer';
 import { RootState } from '../../../redux/store';
 import { CollapsibleSection, Loading } from '../../shared';
+import StatisticsBar from '../../shared/StatisticsBar/StatisticsBar';
 import styles from './style';
 
 type StatisticsProps = {
@@ -12,10 +14,15 @@ type StatisticsProps = {
 };
 const ICON_SCALING = 0.9;
 
+type StatisticsDataState = {
+  data: IStatisticData;
+  loading: boolean;
+};
+
 function Statistics({ subjectId }: StatisticsProps) {
-  const { data, loading } = useSelector((state: RootState) => (
+  const { data, loading } = useSelector<RootState, StatisticsDataState>((state) => (
     {
-      data: state.statisticsState.statistics[subjectId],
+      data: state.statisticsState.statistics[subjectId]?.data,
       loading: state.statisticsState.loading[subjectId],
     }
   ));
@@ -26,16 +33,45 @@ function Statistics({ subjectId }: StatisticsProps) {
     dispatch(fetchStatisticsBySubjectId(subjectId));
   }, [subjectId, dispatch]);
 
-  useEffect(() => {
-    console.log({ data });
-  }, [data]);
+  const barSection = () => {
+    const combinedTotal = data.meaning_correct + data.meaning_incorrect
+      + data.reading_correct + data.reading_incorrect;
+    const readingTotal = data.reading_correct + data.reading_incorrect;
+    const meaningTotal = data.meaning_correct + data.meaning_incorrect;
+    return (
+      <>
+        <Text style={{ paddingTop: '2%' }}>Combined Correct</Text>
+        <StatisticsBar
+          total={combinedTotal}
+          actualCorrect={data.meaning_correct + data.reading_correct}
+        />
+        <Text style={{ paddingTop: '2%' }}>Meaning Correct</Text>
+        <StatisticsBar
+          total={meaningTotal}
+          actualCorrect={data.meaning_correct}
+        />
+        <Text style={{ paddingTop: '2%' }}>Reading Correct</Text>
+        <StatisticsBar
+          total={readingTotal}
+          actualCorrect={data.reading_correct}
+        />
+      </>
+    );
+  };
+
   return (
-    <Loading loading={loading}>
-      <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
-        {renderHeaderText('Statistics')}
-        <Text>{`Percentage Correct: ${data.data.percentage_correct}`}</Text>
-      </CollapsibleSection>
-    </Loading>
+    <CollapsibleSection iconSize={styles.headingText.fontSize * ICON_SCALING}>
+      {renderHeaderText('Statistics')}
+      <Loading loading={loading}>
+        <View style={{ width: '100%' }}>
+          {
+            !data
+              ? <Text>No statistical data for this subject</Text>
+              : barSection()
+          }
+        </View>
+      </Loading>
+    </CollapsibleSection>
   );
 }
 

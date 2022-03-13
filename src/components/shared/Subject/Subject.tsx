@@ -4,7 +4,7 @@ import { SvgUri } from 'react-native-svg';
 import {
   ICharacterImage, IKanjiReading, IMeaning, ISubject,
 } from '../../../models';
-import { SrsStages } from '../../../util/SrsStageEnum';
+import SrsStages from '../../../util/SrsStageEnum';
 import { useTheme } from '../../../util/Theme';
 import styles from './style';
 
@@ -71,7 +71,7 @@ function Subject({ item, displayExtraData = true }: IItemProps) {
       .filter((val: IMeaning) => val.primary === true)[0].meaning;
 
     return (
-      <View style={styles.alignTextElements}>
+      <View style={item.object === 'vocabulary' ? styles.alignTextElementsRight : styles.alignTextElements}>
         <Text style={[styles.readingAndMeaningText, theme.secondaryText]}>{primaryReading}</Text>
         <Text style={[styles.readingAndMeaningText, theme.secondaryText]}>{primaryMeaning}</Text>
       </View>
