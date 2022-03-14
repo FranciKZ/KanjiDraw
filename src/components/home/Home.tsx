@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUserSummary } from '../../redux/reducers/summaryReducer';
 import { RootState } from '../../redux/store';
 import { useTheme } from '../../util/Theme';
+import LevelBreakdown from './LevelBreakdown/levelBreakdown';
 import styles from './style';
 
 function Home() {
@@ -66,6 +67,7 @@ function Home() {
             <Text style={[theme.primaryText, styles.itemCountText]}>{calculateReviews()}</Text>
           </View>
         </TouchableOpacity>
+        <LevelBreakdown />
       </ScrollView>
     </SafeAreaView>
   );
