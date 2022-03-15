@@ -16,6 +16,10 @@ export async function getSubjects(subjectIds: number[]): Promise<IBulkResponse<I
   return await sendRequest<IBulkResponse<ISubject>>('GET', `subjects?ids=${subjectIds.join(',')}`, 'Error fetching subjects.');
 }
 
+export async function getSubjectsByLevels(levelId: number): Promise<IBulkResponse<ISubject>> {
+  return await sendRequest<IBulkResponse<ISubject>>('GET', `subjects?levels=${levelId}`, 'Error fetching subjects');
+}
+
 export async function getAllSubjectData(subjectId: number): Promise<ISubjectWithRelations> {
   const subject = await getSubject(subjectId);
   // let assignments = await getAssignmentData(subject.id);

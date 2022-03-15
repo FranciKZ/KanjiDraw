@@ -11,9 +11,13 @@ import styles from './style';
 type IItemProps = {
   item: ISubject;
   displayExtraData?: boolean;
+  containerStyles?: object;
+  characterStyles?: object;
 };
 
-function Subject({ item, displayExtraData = true }: IItemProps) {
+function Subject({
+  item, displayExtraData = true, containerStyles = {}, characterStyles = {},
+}: IItemProps) {
   const theme = useTheme();
 
   const findRadicalUrl = (): string => {
@@ -35,7 +39,10 @@ function Subject({ item, displayExtraData = true }: IItemProps) {
     switch (item.object) {
       case 'kanji':
         resultingStyles = {
-          backgroundColor: theme.primaryKanji.color, ...baseStyles, ...styles.notVocab,
+          backgroundColor: theme.primaryKanji.color,
+          ...baseStyles,
+          ...styles.notVocab,
+          ...containerStyles,
         };
         break;
       case 'vocabulary':
@@ -45,7 +52,10 @@ function Subject({ item, displayExtraData = true }: IItemProps) {
         break;
       case 'radical':
         resultingStyles = {
-          backgroundColor: theme.primaryRadical.color, ...baseStyles, ...styles.notVocab,
+          backgroundColor: theme.primaryRadical.color,
+          ...baseStyles,
+          ...styles.notVocab,
+          ...containerStyles,
         };
         break;
       default:
@@ -114,8 +124,8 @@ function Subject({ item, displayExtraData = true }: IItemProps) {
           ? (
             <Text
               style={displayExtraData
-                ? [styles.charactersWithExtraContent, theme.secondaryText]
-                : [styles.charactersWithoutExtraContent, theme.secondaryText]}
+                ? [styles.charactersWithExtraContent, theme.secondaryText, characterStyles]
+                : [styles.charactersWithoutExtraContent, theme.secondaryText, characterStyles]}
             >
               {item.data.characters}
             </Text>

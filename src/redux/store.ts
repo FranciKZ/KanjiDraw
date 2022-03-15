@@ -4,6 +4,7 @@ import levelReducer from './reducers/levelReducer';
 import statisticsReducer from './reducers/statisticsReducer';
 import subjectReducer from './reducers/subjectReducer';
 import summaryReducer from './reducers/summaryReducer';
+import userReducer from './reducers/userReducer';
 
 const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ const store = configureStore({
     summaryState: summaryReducer,
     statisticsState: statisticsReducer,
     assignmentState: assignmentReducer,
+    userState: userReducer,
   },
 });
 

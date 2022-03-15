@@ -1,74 +1,75 @@
-import React, { useEffect } from 'react';
-import {
-  RefreshControl, SafeAreaView, Text, View,
-} from 'react-native';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import React, { useCallback, useEffect } from 'react';
+import { SafeAreaView, View } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 import { useDispatch, useSelector } from 'react-redux';
+import { ISummaryResponse, IUser } from '../../models';
 import { fetchUserSummary } from '../../redux/reducers/summaryReducer';
+import { fetchUserData } from '../../redux/reducers/userReducer';
 import { RootState } from '../../redux/store';
-import { useTheme } from '../../util/Theme';
+import { Loading } from '../shared';
 import LevelBreakdown from './LevelBreakdown/levelBreakdown';
-import styles from './style';
+import QuizButtons from './QuizButtons/QuizButtons';
+
+type HomeData = {
+  summary?: ISummaryResponse;
+  user: IUser;
+  loading: boolean;
+};
+
+type HomeSection = {
+  section: string;
+  id: string;
+};
+
+const homeSections: HomeSection[] = [
+  { section: 'quizButtons', id: 'quizButtonsSection' },
+  { section: 'levelBreakdown', id: 'levelBreakdownSection' },
+];
 
 function Home() {
-  const { summary, loading } = useSelector((state: RootState) => state.summaryState);
+  const { summary, loading, user } = useSelector<RootState, HomeData>((state) => (
+    {
+      summary: state.summaryState.summary,
+      user: state.userState.user,
+      loading: state.summaryState.loading || state.userState.loading,
+    }
+  ));
   const dispatch = useDispatch();
-  const theme = useTheme();
 
-  useEffect(() => {
+  const loadData = useCallback(async () => {
     dispatch(fetchUserSummary());
+    dispatch(fetchUserData());
   }, [dispatch]);
 
-  const calculateReviews = () => {
-    let total = 0;
-    if (summary?.data) {
-      total = summary.data.reviews[0].subject_ids.length;
-    }
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
-    return total;
+  const sectionRenderer = (item: HomeSection) => {
+    switch (item.section) {
+      case 'quizButtons':
+        return <QuizButtons summary={summary} />;
+      case 'levelBreakdown':
+        return (
+          <View>
+            <LevelBreakdown level={user?.data?.level} />
+          </View>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView
-        contentContainerStyle={styles.mainView}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={() => dispatch(fetchUserSummary())} />
-        }
-      >
-        <TouchableOpacity
-          style={{
-            ...styles.touchable,
-            backgroundColor: theme.primaryKanji.color,
-            ...theme.secondaryBorder,
-          }}
-        >
-          <Text style={[styles.touchableMainText, theme.secondaryText]}>Lessons</Text>
-          <View style={{ ...styles.itemCountView, backgroundColor: theme.secondaryText.color }}>
-            <Text style={[theme.primaryText, styles.itemCountText]}>
-              {
-              summary
-                ? summary.data.lessons[0].subject_ids.length
-                : 0
-            }
-
-            </Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{
-            ...styles.touchable,
-            backgroundColor: theme.primaryRadical.color,
-            ...theme.secondaryBorder,
-          }}
-        >
-          <Text style={[styles.touchableMainText, theme.secondaryText]}>Reviews</Text>
-          <View style={{ ...styles.itemCountView, backgroundColor: theme.secondaryText.color }}>
-            <Text style={[theme.primaryText, styles.itemCountText]}>{calculateReviews()}</Text>
-          </View>
-        </TouchableOpacity>
-        <LevelBreakdown />
-      </ScrollView>
+      <Loading loading={loading}>
+        <FlatList
+          onRefresh={loadData}
+          refreshing={loading}
+          data={homeSections}
+          renderItem={({ item }: { item: HomeSection }) => sectionRenderer(item)}
+        />
+      </Loading>
     </SafeAreaView>
   );
 }
